@@ -1,18 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import ButtonTranslate from "@/components/ButtonTranslate";
 import CloseIcon from "@/icons/CloseIcon";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useRef } from "react";
 
 interface ISidebar {
   isOpen: any;
   setIsOpen: any;
   navLink: any;
   pathname: any;
-  locale: string;
-  currentLocale: any;
-  handleLocaleChange: any;
   setModalForm?: any;
 }
 export default function Sidebar({
@@ -20,17 +15,7 @@ export default function Sidebar({
   setIsOpen,
   navLink,
   pathname,
-  locale,
-  currentLocale,
-  handleLocaleChange,
 }: ISidebar) {
-  const hasLogged = useRef(false);
-
-  useEffect(() => {
-    if (!hasLogged.current) {
-      hasLogged.current = true;
-    }
-  }, [locale]);
 
   return (
     <>
@@ -70,24 +55,21 @@ export default function Sidebar({
         </div>
         <div className="flex justify-between items-center p-5">
           <p className="text-xl text-gray-400">Menu</p>
-          <ButtonTranslate
-            currentLocale={currentLocale}
-            handleLocaleChange={handleLocaleChange}
-          />
+
         </div>
         <div>
           {navLink.map((link: any, index: number) => (
             <div
               key={index}
-              className={`p-4 m-3 text-xl ${pathname === `/${locale}${link.href.replace(/\/$/, "")}` ||
-                  (pathname.startsWith(`/${locale}${link.href}`) &&
+              className={`p-4 m-3 text-xl ${pathname === `/${link.href.replace(/\/$/, "")}` ||
+                  (pathname.startsWith(`/${link.href}`) &&
                     link.href !== "/")
                   ? "active"
                   : ""
                 }`}
             >
               <Link
-                href={`/${locale}${link.href}`}
+                href={`/${link.href}`}
                 onClick={() => setIsOpen(false)}
                 className=""
               >

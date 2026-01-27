@@ -1,0 +1,139 @@
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  /* width: 16rem; */
+  /* height: 100vh; */
+  /* background-color: rgba(30, 30, 30, 0.6); */
+  /* transform: translateX(-130%);
+  transition: transform 0.3s ease-in-out;
+  z-index: 40; */
+  /* backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); */
+}
+
+.sidebar.translate-x-0 {
+  transform: translateX(0);
+}
+
+.sidebar .active {
+  background-color: var(--primary);
+  color: var(--background);
+  border-radius: 1rem;
+}
+
+.navbar {
+  padding: 0.9rem 5rem;
+  background-color: var(--background);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 0 0 100rem 100rem;
+  justify-content: space-between;
+  display: flex;
+}
+
+.navbar .active {
+  color: var(--primary);
+}
+
+.nav-link {
+  text-decoration: none;
+  margin: 0 1rem;
+  /* color: var(--foreground); */
+  font-weight: 500;
+  height: 0;
+}
+
+.nav-link:hover {
+  color: var(--primary);
+}
+
+.btn-call {
+  background-color: var(--primary);
+  padding: 1rem;
+  display: flex;
+  border-radius: 2rem;
+  color: var(--background);
+  border: 0;
+}
+
+.btn-call p {
+  font-size: 8px !important;
+}
+
+@media screen and (max-width: 768px) {
+  .navbar {
+    border-radius: 0 0 3rem 3rem;
+    padding: 0.5rem 1.5rem;
+
+    .text-brand {
+      h6 {
+        font-size: 14px;
+      }
+
+      p {
+        font-size: 8px;
+      }
+    }
+
+    .nav-link {
+      display: none;
+    }
+
+    .btn-call {
+      justify-content: center;
+      .phone-number {
+        display: none;
+      }
+    }
+  }
+
+  .btn-hidden {
+    display: none;
+  }
+
+  .hiddens {
+    display: block;
+  }
+
+  .brand {
+    width: 55px;
+    height: 50px;
+  }
+}
+
+.menu-wrap {
+  display: flex;
+  align-items: center;
+}
+
+.menu {
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.menu::-webkit-scrollbar {
+  display: none; 
+}
+
+@media screen and (max-width: 1150px){
+  .menu {
+    max-width: 25rem;
+  }
+  .menu {
+  mask-image: linear-gradient(to right, black 85%, transparent);
+  -webkit-mask-image: linear-gradient(to right, black 85%, transparent);
+}
+}
+
+@media screen and (max-width: 936px){
+  .menu {
+    max-width: 18rem;
+  }
+  .menu {
+  mask-image: linear-gradient(to right, black 85%, transparent);
+  -webkit-mask-image: linear-gradient(to right, black 85%, transparent);
+}
+}

@@ -6,8 +6,6 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Hamburger from "@/icons/Hamburger";
 import Sidebar from "./Sidebar";
-import ButtonCall from "@/components/ButtonCall";
-import ButtonTranslate from "@/components/ButtonTranslate";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -57,10 +55,6 @@ export default function Navbar() {
   //   { href: "/product", label: t("product") },
   // ];
 
-  const handleLocaleChange = (locale: string) => {
-    router.push(`/${locale}${pathname.replace(/^\/(en|id)/, "")}`);
-  };
-
   return (
     <>
       <Sidebar
@@ -68,15 +62,12 @@ export default function Navbar() {
         setIsOpen={setIsOpen}
         navLink={navLink}
         pathname={pathname}
-        locale={currentLocale}
-        currentLocale={currentLocale}
-        handleLocaleChange={handleLocaleChange}
       />
-      {pathname !== `/${currentLocale}/landing` && (
+      {/* {pathname !== `/${currentLocale}/landing` && (
         <div className="fixed bottom-5 right-5 md:hidden z-10">
           <ButtonCall />
         </div>
-      )}
+      )} */}
       <div className="sticky top-0 z-10">
         <div className="navbar">
           <div className="flex justify-between w-full">
@@ -172,14 +163,14 @@ export default function Navbar() {
                 }`}
             >
               <div className="flex gap-3 items-center whitespace-nowrap h-full">
-                {pathname !== `/${currentLocale}/landing` && (
+                {/* {pathname !== `/${currentLocale}/landing` && (
                   <ButtonTranslate
                     currentLocale={currentLocale}
                     handleLocaleChange={handleLocaleChange}
                   />
-                )}
+                )} */}
 
-                <ButtonCall />
+                {/* <ButtonCall /> */}
               </div>
             </div>
           </div>
