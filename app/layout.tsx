@@ -1,17 +1,21 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import { Plus_Jakarta_Sans, Poppins } from "next/font/google";
+import "./globals.scss";
 import Navbar from "@/shared/Navbar";
+import Footer from "@/shared/Footer";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  variable: "--font-plus-jakarta",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const poppins = Poppins({
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  variable: "--font-poppins",
 });
+
 
 export const metadata: Metadata = {
   title: "Kastara Ocean",
@@ -24,12 +28,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={poppins.variable}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${poppins.variable} antialiased`}
       >
         <Navbar />
         {children}
+        <Footer />
       </body>
     </html>
   );

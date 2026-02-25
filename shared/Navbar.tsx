@@ -1,59 +1,69 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
-import "../styles/navbar.css";
+
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import "../styles/navbar.scss";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import Hamburger from "@/icons/Hamburger";
 import Sidebar from "./Sidebar";
 
 export default function Navbar() {
   const pathname = usePathname();
-  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
-  const hasLogged = useRef(false);
-  const currentLocale = pathname.split("/")[1];
+  const [isFixed, setIsFixed] = useState(false);
+  const [navHeight, setNavHeight] = useState(0);
 
-  useEffect(() => {
-    if (!hasLogged.current) {
-      hasLogged.current = true;
-    }
-  }, [currentLocale]);
+  const navRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    if (isOpen) {
-      document.body.classList.add("overflow-hidden");
-    } else {
-      document.body.classList.remove("overflow-hidden");
-    }
-  }, [isOpen]);
+  const isLanding = pathname === "/landing";
 
-  const navLinkEn = [
+  const navLink = [
     { href: "/", label: "Home" },
     { href: "/about", label: "About Us" },
     { href: "/contact", label: "Contact" },
-    // { href: "/product", label: "Product" },
-    { href: "/landing", label: "International Health Insurance" },
-    { href: "/become-agent", label: "Become an Agent" },
   ];
 
-  const navLinkId = [
-    { href: "/", label: "Beranda" },
-    { href: "/about", label: "Tentang Kami" },
-    { href: "/contact", label: "Kontak" },
-    // { href: "/product", label: "Produk" },
-    { href: "/landing", label: "Asuransi Kesehatan Internasional" },
-    { href: "/become-agent", label: "Menjadi Agent" },
-  ];
+  // Lock body ketika sidebar buka
+  useEffect(() => {
+    document.body.classList.toggle("overflow-hidden", isOpen);
+  }, [isOpen]);
 
-  const navLink = currentLocale == "en" ? navLinkEn : navLinkId;
+  // Ambil tinggi navbar (untuk spacer biar ga loncat)
+  useLayoutEffect(() => {
+    if (!navRef.current) return;
 
-  // const navLink = [
-  //   { href: "/", label: t("home") },
-  //   { href: "/about", label: t("aboutUs") },
-  //   { href: "/contact", label: t("contact") },
-  //   { href: "/product", label: t("product") },
-  // ];
+    const updateHeight = () => {
+      setNavHeight(navRef.current!.offsetHeight);
+    };
+
+    updateHeight();
+
+    const resizeObserver = new ResizeObserver(updateHeight);
+    resizeObserver.observe(navRef.current);
+
+    return () => resizeObserver.disconnect();
+  }, []);
+
+  // Detect scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 500) {
+        setIsFixed(true);
+      } else {
+        setIsFixed(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const getLinkClass = (href: string) => {
+    return pathname === href || pathname.startsWith(href + "/")
+      ? "nav-link active"
+      : "nav-link";
+  };
 
   return (
     <>
@@ -63,116 +73,65 @@ export default function Navbar() {
         navLink={navLink}
         pathname={pathname}
       />
-      {/* {pathname !== `/${currentLocale}/landing` && (
-        <div className="fixed bottom-5 right-5 md:hidden z-10">
-          <ButtonCall />
-        </div>
-      )} */}
-      <div className="sticky top-0 z-10">
+
+      {/* Spacer agar layout tidak loncat */}
+      {isFixed && <div style={{ height: navHeight }} />}
+
+      <div
+        ref={navRef}
+        className={`navbar-wrap ${isFixed ? "is-fixed scrolled" : ""}`}
+      >
         <div className="navbar">
           <div className="flex justify-between w-full">
-            <div className="flex">
-              <Link href="/" locale={currentLocale} className="brand">
+            {/* LEFT */}
+            <div className="flex items-center">
+              <Link href="/" className="brand">
                 <Image
-                  src="/logo.png"
-                  alt="IndoexpatsInsurance"
+                  src="/logo.svg"
+                  alt="Kastara Ocean"
                   width={85}
                   height={80}
                 />
               </Link>
-              {pathname !== `/${currentLocale}/landing` && (
-                <Link
-                  href="/"
-                  locale={currentLocale}
-                  className="flex items-center ms-3 text-brand md:hidden"
-                >
-                  <div>
-                    <h6 className="m-0 font-semibold">IndoexpatsInsurance</h6>
-                    {/* <p
-                      style={{
-                        fontSize: "10px",
-                        color: "var(--primary)",
-                      }}
-                    >
-                      by msiglifeindonesia
-                    </p> */}
-                  </div>
-                </Link>
-              )}
-              {pathname === `/${currentLocale}/landing` ? (
-                <Link
-                  href="/"
-                  locale={currentLocale}
-                  className="flex items-center ms-3 text-brand"
-                >
-                  <div>
-                    <h6 className="m-0 font-semibold">IndoexpatsInsurance</h6>
-                    {/* <p
-                      style={{
-                        fontSize: "10px",
-                        color: "var(--primary)",
-                      }}
-                    >
-                      by msiglifeindonesia
 
-                    </p> */}
-                  </div>
-                </Link>
-              ) : (
-                <div className="menu-wrap">
-                  <div className="ms-3 flex items-center menu">
-                    <div>
-                      {navLink.map((link, index) => (
-                        <Link
-                          href={`/${currentLocale}${link.href}`}
-                          locale={currentLocale}
-                          key={index}
-                          className={
-                            pathname ===
-                              `/${currentLocale}${link.href.replace(
-                                /\/$/,
-                                ""
-                              )}` ||
-                              (pathname.startsWith(
-                                `/${currentLocale}${link.href}`
-                              ) &&
-                                link.href !== "/")
-                              ? "nav-link active"
-                              : "nav-link"
-                          }
-                        >
-                          {link.label}
-                        </Link>
-                      ))}
-                      {/* <button type="button" className="hidden md:inline-block " onClick={() => setModalForm(true)}>Register</button> */}
-                    </div>
-                  </div>
+              <Link
+                href="/"
+                className={`ms-3 text-brand flex items-center ${!isLanding ? "md:hidden" : ""
+                  }`}
+              >
+                <h6 className="m-0 font-semibold">Kastara Ocean</h6>
+              </Link>
+
+              {!isLanding && (
+                <div className="ms-3 text-lg">
+                  {navLink.map((link, index) => (
+                    <Link
+                      key={index}
+                      href={link.href}
+                      className={getLinkClass(link.href)}
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
                 </div>
               )}
             </div>
-            {pathname !== `/${currentLocale}/landing` && (
-              <div
-                className={`flex items-center me-4 md:hidden`}
+
+            {/* MOBILE */}
+            {!isLanding && (
+              <button
+                className="me-4 md:hidden"
                 onClick={() => setIsOpen(true)}
               >
                 <Hamburger />
+              </button>
+            )}
+
+            {isLanding && (
+              <div className="md:flex items-center gap-3">
+                <button>Daftar Sekarang</button>
               </div>
             )}
-            <div
-              className={`md:block ${pathname !== `/${currentLocale}/landing` && "hidden"
-                }`}
-            >
-              <div className="flex gap-3 items-center whitespace-nowrap h-full">
-                {/* {pathname !== `/${currentLocale}/landing` && (
-                  <ButtonTranslate
-                    currentLocale={currentLocale}
-                    handleLocaleChange={handleLocaleChange}
-                  />
-                )} */}
-
-                {/* <ButtonCall /> */}
-              </div>
-            </div>
           </div>
         </div>
       </div>
