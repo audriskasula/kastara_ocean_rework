@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
-import "../styles/navbar.scss";
+import "../styles/navbar.css";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -48,7 +48,7 @@ export default function Navbar() {
   // Detect scroll
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 500) {
+      if (window.scrollY > 300) {
         setIsFixed(true);
       } else {
         setIsFixed(false);

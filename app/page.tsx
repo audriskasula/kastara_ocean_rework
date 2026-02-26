@@ -18,11 +18,12 @@ export default function Home() {
         {/* <Image alt="" src={"/hero3mobile.png"} width={800} height={100} /> */}
       </div>
       <div className="px-5 background md:px-20">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 h-full">
           <div></div>
-          <div className="md:pt-20 pt-10 pb-16">
-            <div className="text-right">
-              <p className="mb-3">KASTARA OCEAN INDONESA</p>
+          <div className="my-auto">
+            <div className="flex flex-col items-end text-right">
+              <Image src={"/3HeroLogo.png"} alt={""} width={180} height={30} className="mb-3" />
+              <p className="mb-3 text-xl">KASTARA OCEAN INDONESA</p>
               <p className="text-5xl font-semibold">
                 Kesempatan
                 <span className="text-red-700"> Berkarier</span>
@@ -46,7 +47,8 @@ export default function Home() {
       </div>
 
       {/* Kenapa Kastara */}
-      <section className="bg-[#FFF3F8]">
+      <hr className="text-gray-200"/>
+      <section className="">
         <div className="max-w-7xl mx-auto px-6 py-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
             {/* IMAGE */}
@@ -73,11 +75,12 @@ export default function Home() {
           </div>
         </div>
       </section>
+      <hr className="text-gray-200"/>
 
       {/* PARTNERSHIP CRUISE */}
       <div className="px-10 mt-8">
         <div className="text-center text-3xl font-medium">
-          <h1 className="font-semibold">Our Cruise Ship Partneship</h1>
+          <h1 className="font-semibold">Our Cruise Ship Partnership</h1>
         </div>
         <PartnerSwiper
           data={partnershipCruise}
@@ -85,6 +88,8 @@ export default function Home() {
           delay={3000}
         />
       </div>
+
+      <hr className="text-gray-200"/>
 
       {/* Fasilitas Kastara */}
       <div className="mt-10">
@@ -94,7 +99,7 @@ export default function Home() {
         <div>
           <div>
             <div className="flex items-center flex-wrap">
-              <div className="flex items-center flex-wrap bg-[#f5f3ff] me-10 py-12 px-20 rounded-tr-4xl">
+              <div className="flex items-center flex-wrap me-10 py-12 px-20 rounded-tr-4xl">
                 <p className="text-5xl font-semibold">
                   <span className="text-blue-600 font-bold">Fasilitas</span>{" "}
                   <br />
@@ -114,23 +119,14 @@ export default function Home() {
                 </ul>
               </div>
             </div>
-            <div className="bg-[#f5f3ff] px-20">
+            <div className="px-20">
               <CardFasilitas />
             </div>
           </div>
         </div>
       </div>
 
-      <div className="px-10 mt-8">
-        <div className="text-center text-3xl font-medium">
-          <h1 className="font-semibold">Our Cruise Ship Partneship</h1>
-        </div>
-        <PartnerSwiper
-          data={partnershipCruise}
-          filePath="Cruise"
-          delay={3000}
-        />
-      </div>
+      <hr className="text-gray-200 my-15"/>
 
       {/* Testimonial */}
       <div>

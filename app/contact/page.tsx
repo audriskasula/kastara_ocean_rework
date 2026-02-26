@@ -4,8 +4,8 @@ import AgentContact from './AgentContact'
 export default function page() {
   return (
     <div className=''>
-      <div className='text-center py-20 background2'>
-        <div className='px-35'>
+      <div className='text-center background2'>
+        <div className='px-35 py-35'>
           <p className='text-5xl md:text-7xl font-semibold mb-7'>Contact</p>
           <p className='px-5 md:px-20'>Punya pertanyaan? Kami siap bantu. Hubungi tim kami untuk bantuan yang sesuai dengan kebutuhanmu. Kami akan merespons dalam 24 jam.</p>
         </div>

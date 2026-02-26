@@ -49,6 +49,16 @@ h5 {
   padding-top: 5rem;
 }
 
+.backgroundAboutUs {
+  background: url('/overlay.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: var(--primary) !important;
+  width: 100%;
+  padding-top: 5rem;
+}
+
 .nav-link {
   font-weight: 600 !important;
 }

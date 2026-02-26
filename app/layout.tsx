@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Poppins } from "next/font/google";
-import "./globals.scss";
+import "./globals.css";
 import Navbar from "@/shared/Navbar";
 import Footer from "@/shared/Footer";
 
