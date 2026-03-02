@@ -27,7 +27,7 @@ export default function Sidebar({
           <div className="flex">
             <Link href="" className="brand" onClick={() => setIsOpen(false)}>
               <Image
-                src="/logo.png"
+                src="/logo.svg"
                 alt="IndoexpatsInsurance"
                 width={50}
                 height={45}

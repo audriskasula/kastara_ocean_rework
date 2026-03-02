@@ -10,7 +10,7 @@ export default function Footer() {
 
           <div>
             <Link href="/">
-              <img src="/logo.png" alt="Logo" width={120} className="rounded-xl mb-4" />
+              <img src="/logo.svg" alt="Logo" width={120} className="rounded-xl mb-4" />
             </Link>
             <h3 className="text-lg font-semibold text-white mb-3">About Us</h3>
             <p className="text-sm leading-relaxed">
