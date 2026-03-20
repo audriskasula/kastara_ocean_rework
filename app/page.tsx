@@ -13,125 +13,140 @@ import Testimonial from "@/components/Testimonial";
 export default function Home() {
   return (
     <div>
-      {/* HERO */}
-      <div className="-mt-8.75 block md:hidden">
-        {/* <Image alt="" src={"/hero3mobile.png"} width={800} height={100} /> */}
-      </div>
-      <div className="px-5 background md:px-20">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 h-full">
+      {/* ── HERO ── */}
+      <section className="px-5 background md:px-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 h-full">
           <div></div>
           <div className="my-auto">
             <div className="flex flex-col items-end text-right">
-              <Image src={"/3HeroLogo.png"} alt={""} width={180} height={30} className="mb-3" />
-              <p className="mb-3 text-xl">KASTARA OCEAN INDONESA</p>
-              <p className="text-5xl font-semibold">
+              <Image
+                src="/3HeroLogo.png"
+                alt="Kastara Ocean Logo"
+                width={180}
+                height={30}
+                className="mb-3"
+              />
+              <p className="mb-3 text-lg md:text-xl">
+                KASTARA OCEAN INDONESIA
+              </p>
+              <p className="text-3xl md:text-5xl font-semibold leading-tight">
                 Kesempatan
                 <span className="text-red-700"> Berkarier</span>
                 <br />
                 Di Luar Negeri
                 <br />
-                Menunggumu !
+                Menunggumu!
               </p>
-              <h4 className="text-2xl mt-3">Kastara Ocean hadir untuk anda</h4>
+              <h4 className="text-xl md:text-2xl mt-3 font-normal">
+                Kastara Ocean hadir untuk anda
+              </h4>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* PARTNERSHIP HOTELS */}
-      <div className="px-10 mt-8">
-        <div className="text-center text-3xl font-medium">
-          <h1 className="font-semibold">Our Hotels Partnership</h1>
+      {/* ── PARTNERSHIP HOTELS ── */}
+      <section className="px-6 md:px-10 py-16">
+        <div className="text-center mb-2">
+          <h1 className="text-2xl md:text-3xl font-semibold">
+            Our Hotels Partnership
+          </h1>
         </div>
         <PartnerSwiper data={partnershipHotel} filePath="Hotels" />
-      </div>
+      </section>
 
-      {/* Kenapa Kastara */}
-      <hr className="text-gray-200"/>
-      <section className="">
-        <div className="max-w-7xl mx-auto px-6 py-20">
+      <hr className="section-divider" />
+
+      {/* ── KENAPA KASTARA ── */}
+      <section className="py-16">
+        <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-            {/* IMAGE */}
+            {/* Image */}
             <div className="flex justify-center">
               <Image
                 src="/hero2.svg"
-                alt="illustration"
+                alt="Kenapa Kastara Ocean"
                 width={400}
                 height={400}
-                className="h-auto"
+                className="h-auto max-w-full"
               />
             </div>
-            {/* TEXT + CARD */}
+            {/* Text + Cards */}
             <div className="flex flex-col justify-center">
-              <div className="mb-10">
-                <p className="text-4xl md:text-5xl font-bold">
+              <div className="mb-8">
+                <p className="text-3xl md:text-5xl font-bold leading-tight">
                   Kenapa <br />
-                  Harus <span className="text-pink-600">Kastara Ocean</span>?
+                  Harus{" "}
+                  <span className="text-pink-600">Kastara Ocean</span>?
                 </p>
-                <h3>Kelebihan Kastara Ocean</h3>
+                <h3 className="mt-2 text-gray-500">
+                  Kelebihan Kastara Ocean
+                </h3>
               </div>
               <CardWhyKastara />
             </div>
           </div>
         </div>
       </section>
-      <hr className="text-gray-200"/>
 
-      {/* PARTNERSHIP CRUISE */}
-      <div className="px-10 mt-8">
-        <div className="text-center text-3xl font-medium">
-          <h1 className="font-semibold">Our Cruise Ship Partnership</h1>
+      <hr className="section-divider" />
+
+      {/* ── PARTNERSHIP CRUISE ── */}
+      <section className="px-6 md:px-10 py-16">
+        <div className="text-center mb-2">
+          <h1 className="text-2xl md:text-3xl font-semibold">
+            Our Cruise Ship Partnership
+          </h1>
         </div>
         <PartnerSwiper
           data={partnershipCruise}
           filePath="Cruise"
           delay={3000}
         />
-      </div>
+      </section>
 
-      <hr className="text-gray-200"/>
+      <hr className="section-divider" />
 
-      {/* Fasilitas Kastara */}
-      <div className="mt-10">
-        {/* <div>
-          <BasicSwiper />
-        </div> */}
-        <div>
-          <div>
-            <div className="flex items-center flex-wrap">
-              <div className="flex items-center flex-wrap me-10 py-12 px-20 rounded-tr-4xl">
-                <p className="text-5xl font-semibold">
-                  <span className="text-blue-600 font-bold">Fasilitas</span>{" "}
-                  <br />
-                  Kastara Ocean
-                </p>
-              </div>
-              <div>
-                <ul className="space-y-3">
-                  {fasilitasKastara.map((item, index) => (
-                    <li
-                      key={index}
-                      className="flex gap-5 text-gray-600 text-xl"
-                    >
-                      <CheckListIcon /> {item.desc}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-            <div className="px-20">
-              <CardFasilitas />
+      {/* ── FASILITAS KASTARA ── */}
+      <section className="py-16">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+            {/* Title + List */}
+            <div>
+              <p className="text-3xl md:text-5xl font-semibold leading-tight">
+                <span className="text-blue-600 font-bold">Fasilitas</span>
+                <br />
+                Kastara Ocean
+              </p>
+              <ul className="space-y-4 mt-8">
+                {fasilitasKastara.map((item, index) => (
+                  <li
+                    key={index}
+                    className="flex gap-4 text-gray-600 text-base md:text-lg items-start"
+                  >
+                    <span className="flex-shrink-0 mt-1">
+                      <CheckListIcon />
+                    </span>
+                    <span>{item.desc}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
+
+          {/* Facility Cards */}
+          <div className="mt-10">
+            <CardFasilitas />
+          </div>
         </div>
-      </div>
+      </section>
 
-      <hr className="text-gray-200 my-15"/>
+      <hr className="section-divider" />
 
-      {/* Testimonial */}
-      <div>
+      {/* ── TESTIMONIAL ── */}
+      <section>
         <Testimonial />
-      </div>
+      </section>
     </div>
   );
 }

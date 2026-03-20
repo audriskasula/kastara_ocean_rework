@@ -2,6 +2,7 @@
 
 html {
   font-family: "Poppins", sans-serif;
+  scroll-behavior: smooth;
 }
 
 h1 {
@@ -28,14 +29,13 @@ h5 {
   padding: 0 3rem;
 }
 
+/* ── Hero background ── */
 .background {
-  /* background: url('/homeHero.jpg'); */
   background: url('/heroHome.png');
-  background-size: cover; 
+  background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  /* color: var(--primary) !important; */
-  width: 100vw;
+  width: 100%;
   height: 100vh;
 }
 
@@ -61,4 +61,54 @@ h5 {
 
 .nav-link {
   font-weight: 600 !important;
+}
+
+/* ── Section divider ── */
+.section-divider {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #e5e7eb, transparent);
+  margin: 2.5rem auto;
+  max-width: 90%;
+}
+
+/* ── Swiper pagination overrides ── */
+.swiper-pagination-bullet {
+  background: #d1d5db;
+  opacity: 1;
+}
+.swiper-pagination-bullet-active {
+  background: var(--primary) !important;
+}
+.swiper-pagination {
+  position: unset;
+  margin-top: 1.5rem;
+}
+
+/* ── Fade-in animation ── */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.6s ease-out both;
+}
+
+/* ── Mobile responsiveness ── */
+@media screen and (max-width: 768px) {
+  .background {
+    height: 60vh;
+    min-height: 400px;
+  }
+
+  .background2 {
+    padding-top: 3rem;
+  }
 }

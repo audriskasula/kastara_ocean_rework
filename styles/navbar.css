@@ -14,124 +14,7 @@
   border-radius: 1rem;
 }
 
-.navbar {
-  padding: 0.9rem 5rem;
-  background-color: var(--background);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  justify-content: space-between;
-  display: flex;
-}
-
-.navbar .active {
-  color: var(--primary);
-}
-
-.nav-link {
-  text-decoration: none;
-  margin: 0 1rem;
-  /* color: var(--foreground); */
-  font-weight: 500;
-  height: 0;
-}
-
-.nav-link:hover {
-  color: var(--primary);
-}
-
-.btn-call {
-  background-color: var(--primary);
-  padding: 1rem;
-  display: flex;
-  border-radius: 2rem;
-  color: var(--background);
-  border: 0;
-}
-
-.btn-call p {
-  font-size: 8px !important;
-}
-
-@media screen and (max-width: 768px) {
-  .navbar {
-    border-radius: 0 0 3rem 3rem;
-    padding: 0.5rem 1.5rem;
-
-    .text-brand {
-      h6 {
-        font-size: 14px;
-      }
-
-      p {
-        font-size: 8px;
-      }
-    }
-
-    .nav-link {
-      display: none;
-    }
-
-    .btn-call {
-      justify-content: center;
-
-      .phone-number {
-        display: none;
-      }
-    }
-  }
-
-  .btn-hidden {
-    display: none;
-  }
-
-  .hiddens {
-    display: block;
-  }
-
-  .brand {
-    width: 55px;
-    height: 50px;
-  }
-}
-
-.menu-wrap {
-  display: flex;
-  align-items: center;
-}
-
-.menu {
-  overflow-x: auto;
-  overflow-y: hidden;
-  white-space: nowrap;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.menu::-webkit-scrollbar {
-  display: none;
-}
-
-@media screen and (max-width: 1150px) {
-  .menu {
-    max-width: 25rem;
-  }
-
-  .menu {
-    mask-image: linear-gradient(to right, black 85%, transparent);
-    -webkit-mask-image: linear-gradient(to right, black 85%, transparent);
-  }
-}
-
-@media screen and (max-width: 936px) {
-  .menu {
-    max-width: 18rem;
-  }
-
-  .menu {
-    mask-image: linear-gradient(to right, black 85%, transparent);
-    -webkit-mask-image: linear-gradient(to right, black 85%, transparent);
-  }
-}
-
+/* ── Navbar positioning wrapper ── */
 .navbar-wrap {
   position: absolute;
   top: 0;
@@ -150,6 +33,16 @@
   right: 0;
 }
 
+.navbar-wrap.scrolled {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+}
+
+.navbar-wrap.scrolled .navbar {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* ── Navbar bar ── */
 .navbar {
   padding: 0.9rem 5rem;
   display: flex;
@@ -159,11 +52,107 @@
   transition: all 200ms ease;
 }
 
-.navbar-wrap.scrolled {
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(10px);
+.navbar .active {
+  color: var(--primary);
 }
 
-.navbar-wrap.scrolled .navbar {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+/* ── Nav links ── */
+.nav-link {
+  text-decoration: none;
+  margin: 0 1rem;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.nav-link:hover {
+  color: var(--primary);
+}
+
+/* ── CTA button ── */
+.btn-call {
+  background-color: var(--primary);
+  padding: 1rem;
+  display: flex;
+  border-radius: 2rem;
+  color: var(--background);
+  border: 0;
+}
+
+.btn-call p {
+  font-size: 8px !important;
+}
+
+/* ── Scrollable menu ── */
+.menu-wrap {
+  display: flex;
+  align-items: center;
+}
+
+.menu {
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.menu::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Responsive ── */
+@media screen and (max-width: 768px) {
+  .navbar {
+    border-radius: 0 0 3rem 3rem;
+    padding: 0.5rem 1.5rem;
+  }
+
+  .navbar .text-brand h6 {
+    font-size: 14px;
+  }
+
+  .navbar .text-brand p {
+    font-size: 8px;
+  }
+
+  .navbar .nav-link {
+    display: none;
+  }
+
+  .navbar .btn-call {
+    justify-content: center;
+  }
+
+  .navbar .btn-call .phone-number {
+    display: none;
+  }
+
+  .btn-hidden {
+    display: none;
+  }
+
+  .hiddens {
+    display: block;
+  }
+
+  .brand {
+    width: 55px;
+    height: 50px;
+  }
+}
+
+@media screen and (max-width: 1150px) {
+  .menu {
+    max-width: 25rem;
+    mask-image: linear-gradient(to right, black 85%, transparent);
+    -webkit-mask-image: linear-gradient(to right, black 85%, transparent);
+  }
+}
+
+@media screen and (max-width: 936px) {
+  .menu {
+    max-width: 18rem;
+    mask-image: linear-gradient(to right, black 85%, transparent);
+    -webkit-mask-image: linear-gradient(to right, black 85%, transparent);
+  }
 }

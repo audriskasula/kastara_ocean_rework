@@ -21,7 +21,7 @@ export const kelebihanKastara = [
   },
   {
     title: "Biaya Terjangkau",
-    desc: "Sudah Terakreditasi dan Kinerja “A”Biaya Terjangkau dan bisa di cicil sampai 3X",
+    desc: "Biaya terjangkau dan bisa dicicil sampai 3X",
     icon: "/money.svg"
   },
 ];

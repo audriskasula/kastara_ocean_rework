@@ -1,52 +1,56 @@
-/* eslint-disable @next/next/no-img-element */
-import Link from 'next/link'
-import React from 'react'
+import Image from "next/image";
+import Link from "next/link";
 
 export default function AgentContact() {
-    return (
-        <div className='grid grid-cols-1 gap-4 md:grid-cols-5 mt-5'>
-            {nomorTelp.map((item, index) => (
-                <Link href={item.link} target='_blank' className="rounded-3xl bg-[#F5FFFD] shadow-2xl hover:scale-[1.04] transition-all ease-in-out" key={index}>
-                    <div className="px-6 py-9 flex justify-center items-center flex-col">
-                        <img src={item?.gender === "female" ? '/femaleAvatar.svg' : '/maleAvatar.svg'} alt="" className='mb-5' />
-                        <p className='text-xl font-semibold text-center'>{item?.nama}</p>
-                        <p className='text-center'>{item?.nomor}</p>
-                    </div>
-                </Link>
-            ))}
-        </div>
-    )
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 mt-8">
+      {nomorTelp.map((item, index) => (
+        <Link
+          href={item.link}
+          target="_blank"
+          className="rounded-2xl bg-[#F5FFFD] shadow-lg hover:shadow-xl hover:scale-[1.03] transition-all duration-300 ease-in-out"
+          key={index}
+        >
+          <div className="px-6 py-8 flex justify-center items-center flex-col">
+            <Image
+              src={
+                item.gender === "female"
+                  ? "/femaleAvatar.svg"
+                  : "/maleAvatar.svg"
+              }
+              alt={item.nama}
+              width={80}
+              height={80}
+              className="mb-4"
+            />
+            <p className="text-lg font-semibold text-center text-gray-800">
+              {item.nama}
+            </p>
+            <p className="text-center text-gray-500">{item.nomor}</p>
+          </div>
+        </Link>
+      ))}
+    </div>
+  );
 }
 
 const nomorTelp = [
-    {
-        nama: 'Mr Bastian',
-        nomor: '0822-2087-9544',
-        gender: 'male',
-        link: 'https://api.whatsapp.com/send/?phone=6282220879544'
-    },
-    {
-        nama: 'Miss Ersa',
-        nomor: '0895-4230-05119',
-        gender: 'female',
-        link: 'https://api.whatsapp.com/send/?phone=62895423005119'
-    },
-    {
-        nama: 'Miss Valis',
-        nomor: '0882-0032-09563',
-        gender: 'female',
-        link: 'https://api.whatsapp.com/send/?phone=62882003209563'
-    },
-    // {
-    //     nama: 'Ribka',
-    //     nomor: '0812 8070 0776',
-    //     gender: 'female',
-    //     link: 'https://api.whatsapp.com/send/?phone=6281280700776'
-    // },
-    // {
-    //     nama: 'Joseph',
-    //     nomor: '0819 1700 2126',
-    //     gender: 'male',
-    //     link: 'https://api.whatsapp.com/send/?phone=6281917002126'
-    // },
-]
+  {
+    nama: "Mr Bastian",
+    nomor: "0822-2087-9544",
+    gender: "male",
+    link: "https://api.whatsapp.com/send/?phone=6282220879544",
+  },
+  {
+    nama: "Miss Ersa",
+    nomor: "0895-4230-05119",
+    gender: "female",
+    link: "https://api.whatsapp.com/send/?phone=62895423005119",
+  },
+  {
+    nama: "Miss Valis",
+    nomor: "0882-0032-09563",
+    gender: "female",
+    link: "https://api.whatsapp.com/send/?phone=62882003209563",
+  },
+];
