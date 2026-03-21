@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function AgentContact() {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 mt-8">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
       {nomorTelp.map((item, index) => (
         <Link
           href={item.link}

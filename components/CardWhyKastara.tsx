@@ -3,15 +3,16 @@
 import { kelebihanKastara } from "@/app/dataText";
 import CheckListIcon from "@/icons/ChecklistIcon2";
 import Image from "next/image";
+import { StaggerContainer, StaggerItem } from "./MotionComponents";
 
 export default function CardWhyKastara() {
   return (
-    <div className="flex flex-col gap-4">
+    <StaggerContainer className="flex flex-col gap-4" staggerDelay={0.08}>
       {kelebihanKastara.map((item, index) => (
-        <div key={index}>
-          <div className="bg-white rounded-xl shadow-[0px_4px_30px_rgba(0,0,0,0.06)] p-5 w-full hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
+        <StaggerItem key={index}>
+          <div className="bg-white rounded-xl border border-gray-100 shadow-[0px_4px_30px_rgba(0,0,0,0.05)] p-5 w-full hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 group">
             <div className="flex items-center gap-5 mb-2">
-              <div className="flex-shrink-0">
+              <div className="flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
                 <Image src={item?.icon} width={50} height={50} alt="" />
               </div>
               <div className="text-gray-200">|</div>
@@ -22,12 +23,12 @@ export default function CardWhyKastara() {
                   </span>
                   <p className="font-semibold text-lg m-0">{item.title}</p>
                 </div>
-                <p className="text-sm text-gray-600 m-0">{item.desc}</p>
+                <p className="text-sm text-gray-500 m-0 mt-0.5">{item.desc}</p>
               </div>
             </div>
           </div>
-        </div>
+        </StaggerItem>
       ))}
-    </div>
+    </StaggerContainer>
   );
 }
