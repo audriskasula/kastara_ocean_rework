@@ -92,6 +92,18 @@ export default function Footer() {
                 ➤
               </button>
             </div>
+            
+            <div>
+              <h3 className="text-lg font-semibold text-white mb-3 mt-8">
+                Mulai Kariermu
+              </h3>
+              <p className="text-sm mb-4 leading-relaxed">
+                Raih mimpimu bekerja di hotel<br/>dan kapal pesiar internasional.
+              </p>
+              <Link href="/pendaftaran" className="inline-block bg-primary hover:bg-rose-700 text-white font-semibold px-6 py-2.5 rounded-full transition-colors duration-200">
+                Pendaftaran Online &rarr;
+              </Link>
+            </div>
           </div>
         </div>
 

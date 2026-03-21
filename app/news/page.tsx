@@ -45,7 +45,7 @@ export default function NewsList() {
     <div className="overflow-x-hidden pt-20 pb-28">
       {/* ── HEADER ── */}
       <section className="bg-slate-50 border-b border-gray-100 mb-16">
-        <div className="max-w-7xl mx-auto px-6 py-16 md:py-24 text-center">
+        <div className="max-w-7xl mx-auto mt-8 px-6 py-16 md:py-24 text-center">
           <FadeIn>
             <p className="text-sm uppercase tracking-widest text-primary font-bold mb-4">
               Pusat Informasi
@@ -61,7 +61,7 @@ export default function NewsList() {
       </section>
 
       <div className="max-w-7xl mx-auto px-6">
-        
+
         {/* ── FEATURED NEWS ── */}
         <FadeIn direction="up">
           <div className="mb-16">
@@ -100,7 +100,7 @@ export default function NewsList() {
           <span className="w-2 h-6 bg-gray-300 rounded-full inline-block"></span>
           Artikel Terbaru
         </h2>
-        
+
         <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {restNews.map((news) => (
             <StaggerItem key={news.slug}>

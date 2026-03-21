@@ -9,7 +9,7 @@ export default function Contact() {
     <div className="overflow-x-hidden pt-20">
       {/* ── HERO SECTION ── */}
       <section className="bg-slate-50 border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-6 py-20 md:py-32">
+        <div className="max-w-7xl mx-auto mt-8 px-6 py-20 md:py-32">
           <div className="text-center max-w-3xl mx-auto">
             <FadeIn>
               <p className="text-sm uppercase tracking-widest text-primary font-bold mb-4">
@@ -32,13 +32,13 @@ export default function Contact() {
       <section className="py-20 md:py-28">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
-            
+
             {/* LEFT: INFO & AGENTS */}
             <div className="lg:col-span-5 flex flex-col gap-10">
               <FadeIn direction="up">
                 <div>
                   <h3 className="text-2xl font-bold text-gray-900 mb-6">Informasi Kontak</h3>
-                  
+
                   <div className="space-y-6">
                     <div className="flex gap-4">
                       <div className="w-12 h-12 bg-rose-50 text-primary rounded-xl flex items-center justify-center shrink-0">
@@ -46,7 +46,7 @@ export default function Contact() {
                       </div>
                       <div>
                         <h4 className="font-semibold text-gray-900">Alamat Kantor</h4>
-                        <p className="text-gray-600 leading-relaxed mt-1">Gedung Kastara Tower Lt. 4<br/>Jl. Sudirman No. 45, Jakarta Selatan<br/>DKI Jakarta 12190</p>
+                        <p className="text-gray-600 leading-relaxed mt-1">Gedung Kastara Tower Lt. 4<br />Jl. Sudirman No. 45, Jakarta Selatan<br />DKI Jakarta 12190</p>
                       </div>
                     </div>
 
@@ -56,7 +56,7 @@ export default function Contact() {
                       </div>
                       <div>
                         <h4 className="font-semibold text-gray-900">Email</h4>
-                        <p className="text-gray-600 leading-relaxed mt-1">info@kastaraocean.com<br/>support@kastaraocean.com</p>
+                        <p className="text-gray-600 leading-relaxed mt-1">info@kastaraocean.com<br />support@kastaraocean.com</p>
                       </div>
                     </div>
 
@@ -66,7 +66,7 @@ export default function Contact() {
                       </div>
                       <div>
                         <h4 className="font-semibold text-gray-900">Jam Operasional</h4>
-                        <p className="text-gray-600 leading-relaxed mt-1">Senin - Jumat: 09:00 - 17:00 WIB<br/>Sabtu: 09:00 - 14:00 WIB<br/>Minggu & Libur Nasional: Tutup</p>
+                        <p className="text-gray-600 leading-relaxed mt-1">Senin - Jumat: 09:00 - 17:00 WIB<br />Sabtu: 09:00 - 14:00 WIB<br />Minggu & Libur Nasional: Tutup</p>
                       </div>
                     </div>
                   </div>
@@ -89,7 +89,7 @@ export default function Contact() {
               <FadeIn direction="left" delay={0.3} className="h-full">
                 <div className="bg-white p-8 md:p-10 rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-gray-100 h-full">
                   <h3 className="text-2xl font-bold text-gray-900 mb-6">Kirim Pesan</h3>
-                  
+
                   <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
@@ -126,7 +126,7 @@ export default function Contact() {
                     <button type="submit" className="w-full bg-primary text-white font-semibold py-4 rounded-xl hover:bg-rose-700 transition-all duration-300 shadow-md hover:shadow-lg focus:ring-4 focus:ring-primary/20">
                       Kirim Pesan Sekarang
                     </button>
-                    
+
                     <p className="text-xs text-center text-gray-500 mt-4">
                       Dengan mengirim pesan ini, Anda menyetujui kebijakan privasi kami.
                     </p>

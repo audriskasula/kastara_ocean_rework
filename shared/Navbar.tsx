@@ -22,6 +22,7 @@ export default function Navbar() {
     { href: "/", label: "Home" },
     { href: "/about", label: "About Us" },
     { href: "/contact", label: "Contact" },
+    { href: "/news", label: "News" },
   ];
 
   // Lock body ketika sidebar buka
@@ -117,22 +118,31 @@ export default function Navbar() {
               )}
             </div>
 
-            {/* MOBILE */}
-            {!isLanding && (
-              <button
-                className="me-4 md:hidden"
-                onClick={() => setIsOpen(true)}
-              >
-                <Hamburger />
-              </button>
-            )}
+            {/* RIGHT DESKTOP */}
+            <div className="hidden md:flex items-center gap-3">
+              <Link href="/pendaftaran" className="bg-primary hover:bg-rose-700 text-white font-semibold px-6 py-2.5 rounded-full transition-all duration-300 shadow-md hover:shadow-lg text-sm">
+                Daftar Sekarang
+              </Link>
+            </div>
 
-            {isLanding && (
-              <div className="md:flex items-center gap-3">
-                <button>Daftar Sekarang</button>
-              </div>
-            )}
+            {/* MOBILE TOGGLE */}
+            <button
+              className="md:hidden text-gray-800 p-2"
+              onClick={() => setIsOpen(true)}
+            >
+              <Hamburger />
+            </button>
+
           </div>
+        </div>
+      </div>
+
+      {/* MOBILE FLOATING CTA */}
+      <div className="md:hidden fixed bottom-6 left-0 right-0 z-50 px-5 pointer-events-none">
+        <div className="flex justify-center">
+          <Link href="/pendaftaran" className="bg-primary text-white font-bold w-full max-w-sm py-3.5 rounded-full shadow-[0_8px_30px_rgba(225,29,72,0.3)] text-center text-sm tracking-wide pointer-events-auto active:scale-95 transition-transform border border-white/20">
+            Daftar Sekarang
+          </Link>
         </div>
       </div>
     </>

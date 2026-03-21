@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+
+@theme {
+  --color-primary: #e11d48;
+}
+
 html {
   font-family: "Poppins", sans-serif;
   scroll-behavior: smooth;
@@ -8,15 +13,19 @@ html {
 h1 {
   font-size: xx-large;
 }
+
 h2 {
   font-size: x-large;
 }
+
 h3 {
   font-size: larger;
 }
+
 h4 {
   font-size: large;
 }
+
 h5 {
   font-size: medium;
 }
@@ -77,9 +86,11 @@ h5 {
   background: #d1d5db;
   opacity: 1;
 }
+
 .swiper-pagination-bullet-active {
   background: var(--primary) !important;
 }
+
 .swiper-pagination {
   position: unset;
   margin-top: 1.5rem;
@@ -91,6 +102,7 @@ h5 {
     opacity: 0;
     transform: translateY(24px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);

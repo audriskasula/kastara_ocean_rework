@@ -9,7 +9,7 @@ export default function About() {
     <div className="overflow-x-hidden pt-20">
       {/* ── HERO SECTION ── */}
       <section className="bg-slate-50 border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-6 py-20 md:py-32">
+        <div className="max-w-7xl mx-auto px-6 py-20 md:py-32 mt-8">
           <div className="text-center max-w-3xl mx-auto">
             <FadeIn>
               <p className="text-sm uppercase tracking-widest text-primary font-bold mb-4">
@@ -49,7 +49,7 @@ export default function About() {
                 <div className="space-y-6">
                   <div className="bg-white p-6 rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.03)] border border-gray-50">
                     <h3 className="text-xl font-bold text-gray-800 mb-2 flex items-center gap-2">
-                       Visi
+                      Visi
                     </h3>
                     <p className="text-gray-600 leading-relaxed">
                       Menjadi jembatan utama dan agensi tenaga kerja terdepan di Indonesia yang mengantarkan talenta lokal menuju panggung perhotelan dan kapal pesiar global secara profesional dan berintegritas.
@@ -57,7 +57,7 @@ export default function About() {
                   </div>
                   <div className="bg-white p-6 rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.03)] border border-gray-50">
                     <h3 className="text-xl font-bold text-gray-800 mb-2 flex items-center gap-2">
-                       Misi
+                      Misi
                     </h3>
                     <ul className="text-gray-600 leading-relaxed space-y-2 list-disc pl-5 marker:text-primary">
                       <li>Memberikan pelatihan dan persiapan standar internasional.</li>

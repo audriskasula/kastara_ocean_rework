@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   fasilitasKastara,
@@ -71,10 +72,20 @@ export default function HomeClient() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.55 }}
-                className="text-xl md:text-2xl mt-4 font-normal text-gray-600"
+                className="text-xl md:text-2xl mt-4 font-normal text-gray-600 mb-8"
               >
                 Kastara Ocean hadir untuk anda
               </motion.h4>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.65 }}
+              >
+                <Link href="/pendaftaran" className="bg-primary text-white font-semibold px-8 py-4 rounded-full hover:bg-rose-700 hover:shadow-lg transition-all duration-300">
+                  Daftar Sekarang
+                </Link>
+              </motion.div>
             </div>
           </div>
         </div>
@@ -133,6 +144,12 @@ export default function HomeClient() {
                 </div>
               </FadeIn>
               <CardWhyKastara />
+
+              <FadeIn direction="right" delay={0.2} className="mt-8">
+                <Link href="/pendaftaran" className="inline-block border-2 border-primary text-primary font-semibold px-8 py-3 rounded-full hover:bg-primary hover:text-white transition-all duration-300">
+                  Bergabung Bersama Kami
+                </Link>
+              </FadeIn>
             </div>
           </div>
         </div>

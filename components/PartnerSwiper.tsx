@@ -50,10 +50,10 @@ export default function PartnerSwiper({
       >
         {data.map((item) => (
           <SwiperSlide key={item.src}>
-            <div className="flex items-center justify-center h-32 md:h-40 p-4 border border-transparent rounded-xl hover:bg-gray-50 hover:border-gray-100 hover:shadow-sm transition-all duration-300 group">
+            <div className="flex items-center justify-center h-24 md:h-40 p-4 border border-transparent rounded-xl hover:bg-gray-50 hover:border-gray-100 hover:shadow-sm transition-all duration-300 group">
               <Image
                 src={`/${filePath}/${item.src}`}
-                width={130}
+                width={100}
                 height={100}
                 alt={item.name}
                 className="object-contain grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300"
