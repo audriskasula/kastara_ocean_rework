@@ -45,7 +45,6 @@ h5 {
   background-position: center;
   background-repeat: no-repeat;
   width: 100%;
-  height: 100vh;
 }
 
 .background2 {
@@ -55,7 +54,6 @@ h5 {
   background-repeat: no-repeat;
   color: var(--primary) !important;
   width: 100%;
-  padding-top: 5rem;
 }
 
 .backgroundAboutUs {
@@ -65,7 +63,6 @@ h5 {
   background-repeat: no-repeat;
   color: var(--primary) !important;
   width: 100%;
-  padding-top: 5rem;
 }
 
 .nav-link {
@@ -115,12 +112,5 @@ h5 {
 
 /* ── Mobile responsiveness ── */
 @media screen and (max-width: 768px) {
-  .background {
-    height: 60vh;
-    min-height: 400px;
-  }
-
-  .background2 {
-    padding-top: 3rem;
-  }
+  /* No more hardcoded heights */
 }

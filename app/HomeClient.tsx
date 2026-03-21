@@ -23,14 +23,22 @@ export default function HomeClient() {
   return (
     <div className="overflow-x-hidden">
       {/* ── HERO ── */}
-      <section className="px-5 background md:px-20 relative">
-        {/* Subtle gradient overlay for text readability */}
-        <div className="absolute inset-0 bg-gradient-to-l from-white/30 to-transparent pointer-events-none" />
+      <section className="relative w-full min-h-[100dvh] bg-slate-50 md:bg-transparent flex flex-col">
+        {/* Mobile image (stacked) */}
+        <div className="md:hidden w-full h-[45vh] relative shrink-0">
+          <Image src="/heroHome.png" alt="Hero Background" fill className="object-cover object-center" priority />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-50 via-transparent to-transparent pointer-events-none" />
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 h-full relative z-10">
-          <div></div>
-          <div className="my-auto">
-            <div className="flex flex-col items-end text-right">
+        {/* Desktop background */}
+        <div className="hidden md:block absolute inset-0 background pointer-events-none" />
+        {/* Subtle gradient overlay for text readability on desktop */}
+        <div className="hidden md:block absolute inset-0 bg-gradient-to-l from-white/30 to-transparent pointer-events-none" />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 flex-grow w-full relative z-10 items-center">
+          <div className="hidden md:block"></div>
+          <div className="px-6 py-10 md:px-20 md:py-0 w-full">
+            <div className="flex flex-col items-center md:items-end text-center md:text-right">
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}

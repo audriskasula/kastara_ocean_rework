@@ -6,10 +6,10 @@ import Link from "next/link";
 
 export default function About() {
   return (
-    <div className="overflow-x-hidden pt-20">
+    <div className="overflow-x-hidden">
       {/* ── HERO SECTION ── */}
       <section className="bg-slate-50 border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-6 py-20 md:py-32 mt-8">
+        <div className="max-w-7xl mx-auto px-6 pb-16 pt-22 md:pb-24 md:pt-40">
           <div className="text-center max-w-3xl mx-auto">
             <FadeIn>
               <p className="text-sm uppercase tracking-widest text-primary font-bold mb-4">

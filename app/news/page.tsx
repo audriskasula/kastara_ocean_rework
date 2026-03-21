@@ -42,10 +42,10 @@ export default function NewsList() {
   const restNews = dummyNews.slice(1);
 
   return (
-    <div className="overflow-x-hidden pt-20 pb-28">
+    <div className="overflow-x-hidden pb-28">
       {/* ── HEADER ── */}
       <section className="bg-slate-50 border-b border-gray-100 mb-16">
-        <div className="max-w-7xl mx-auto mt-8 px-6 py-16 md:py-24 text-center">
+        <div className="max-w-7xl mx-auto px-6 pb-16 pt-22 md:pb-24 md:pt-40 text-center">
           <FadeIn>
             <p className="text-sm uppercase tracking-widest text-primary font-bold mb-4">
               Pusat Informasi
