@@ -44,15 +44,15 @@ export const fasilitasKastara = [
 export const gambarRuangan = [
   {
     image: "/ruangHousekeeping.svg",
-    title : "Ruang Housekeeping"
+    title: "Ruang Housekeeping"
   },
   {
     image: "/ruangKelas.svg",
-    title : "Ruang Kelas"
+    title: "Ruang Kelas"
   },
   {
     image: "/ruangFnB.svg",
-    title : "Ruang Food & Beverage"
+    title: "Ruang Food & Beverage"
   },
 ]
 
@@ -90,4 +90,67 @@ export const partnershipCruise = [
   { src: "/msc.svg", name: "MSC" },
   { src: "/princesscruises.svg", name: "Princess" },
   { src: "/royal_caribbean_international.svg", name: "Royal Caribbean" },
+];
+
+export const testimonials = [
+  {
+    name: "Ranti Sotejo",
+    rating: 5.0,
+    text: "Sekolah ini sangat membantu saya memahami dunia perhotelan dan membuka peluang kerja di kapal pesiar.",
+    gender: "female",
+  },
+  {
+    name: "Ahmad Raka",
+    rating: 4.9,
+    text: "Materi yang diajarkan lengkap, dari hospitality hingga persiapan kerja di cruise line.",
+    gender: "male",
+  },
+  {
+    name: "Dina Putri",
+    rating: 5.0,
+    text: "Pelatihannya profesional dan sangat membantu saya lolos seleksi kerja di kapal pesiar.",
+    gender: "female",
+  },
+  {
+    name: "Budi Santoso",
+    rating: 4.8,
+    text: "Instruktur berpengalaman dan memberikan banyak insight tentang dunia kerja perhotelan internasional.",
+    gender: "male",
+  },
+  {
+    name: "Siti Rahma",
+    rating: 5.0,
+    text: "Saya jadi lebih percaya diri setelah mengikuti program ini, terutama untuk karier di kapal pesiar.",
+    gender: "female",
+  },
+  {
+    name: "Andi Pratama",
+    rating: 4.7,
+    text: "Fasilitas lengkap dan praktik langsung membuat saya siap bekerja di industri hospitality.",
+    gender: "male",
+  },
+  {
+    name: "Lina Kusuma",
+    rating: 5.0,
+    text: "Programnya sangat terstruktur dan membantu memahami standar kerja hotel dan cruise internasional.",
+    gender: "female",
+  },
+  {
+    name: "Rizky Hidayat",
+    rating: 4.8,
+    text: "Banyak tips dan simulasi interview untuk kerja di kapal pesiar yang sangat berguna.",
+    gender: "male",
+  },
+  {
+    name: "Maya Sari",
+    rating: 5.0,
+    text: "Pengalaman belajar yang menyenangkan dan membuka peluang karier di luar negeri.",
+    gender: "female",
+  },
+  {
+    name: "Fajar Nugroho",
+    rating: 4.9,
+    text: "Rekomendasi banget untuk yang ingin berkarier di dunia perhotelan dan kapal pesiar.",
+    gender: "male",
+  },
 ];

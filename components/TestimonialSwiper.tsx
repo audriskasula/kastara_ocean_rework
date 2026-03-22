@@ -6,27 +6,8 @@ import "swiper/css";
 import "swiper/css/pagination";
 import StarIcon from "@/icons/StarIcon";
 import Image from "next/image";
+import { testimonials } from "@/app/dataText";
 
-const testimonials = [
-  {
-    name: "Ranti Sotejo",
-    rating: 5.0,
-    text: "Semoga dapat membantu dalam mencari pekerjaan dan meningkatkan skill untuk masa depan yang lebih baik.",
-    gender: "female",
-  },
-  {
-    name: "Ahmad Raka",
-    rating: 4.8,
-    text: "MJC menyajikan informasi mulai dari program, basis data klien, talenta, mentor hingga tips karier yang sangat berguna.",
-    gender: "male",
-  },
-  {
-    name: "Dina Putri",
-    rating: 5.0,
-    text: "Pelayanan sangat baik dan sangat membantu karier saya. Prosesnya cepat dan transparan.",
-    gender: "female",
-  },
-];
 
 export default function SwiperTestimonial() {
   return (
@@ -35,9 +16,9 @@ export default function SwiperTestimonial() {
         slidesPerView={1.1}
         spaceBetween={20}
         centeredSlides={false}
-        pagination={{ 
+        pagination={{
           clickable: true,
-          el: '.custom-swiper-pagination', 
+          el: '.custom-swiper-pagination',
         }}
         modules={[Pagination]}
         className="pb-4"

@@ -62,7 +62,7 @@ export default function HomeClient() {
                 KASTARA OCEAN INDONESIA
               </motion.p>
 
-              <motion.p
+              <motion.h1
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.35 }}
@@ -74,7 +74,7 @@ export default function HomeClient() {
                 Di Luar Negeri
                 <br />
                 Menunggumu!
-              </motion.p>
+              </motion.h1>
 
               <motion.h4
                 initial={{ opacity: 0, y: 20 }}
@@ -106,9 +106,9 @@ export default function HomeClient() {
             <p className="text-sm uppercase tracking-widest text-gray-400 mb-2">
               Partner Kami
             </p>
-            <h1 className="text-2xl md:text-3xl font-semibold">
+            <h2 className="text-2xl md:text-3xl font-semibold">
               Our Hotels Partnership
-            </h1>
+            </h2>
           </div>
         </FadeIn>
         <FadeIn delay={0.15}>
@@ -141,11 +141,11 @@ export default function HomeClient() {
                   <p className="text-sm uppercase tracking-widest text-gray-400 mb-3">
                     Mengapa Kami
                   </p>
-                  <p className="text-3xl md:text-5xl font-bold leading-tight">
+                  <h2 className="text-3xl md:text-5xl font-bold leading-tight">
                     Kenapa <br />
                     Harus{" "}
                     <span className="text-pink-600">Kastara Ocean</span>?
-                  </p>
+                  </h2>
                   <h3 className="mt-3 text-gray-500">
                     Kelebihan Kastara Ocean
                   </h3>
@@ -172,9 +172,9 @@ export default function HomeClient() {
             <p className="text-sm uppercase tracking-widest text-gray-400 mb-2">
               Partner Kami
             </p>
-            <h1 className="text-2xl md:text-3xl font-semibold">
+            <h2 className="text-2xl md:text-3xl font-semibold">
               Our Cruise Ship Partnership
-            </h1>
+            </h2>
           </div>
         </FadeIn>
         <FadeIn delay={0.15}>
@@ -198,11 +198,11 @@ export default function HomeClient() {
                 <p className="text-sm uppercase tracking-widest text-gray-400 mb-3">
                   Fasilitas
                 </p>
-                <p className="text-3xl md:text-5xl font-semibold leading-tight">
+                <h2 className="text-3xl md:text-5xl font-semibold leading-tight">
                   <span className="text-blue-600 font-bold">Fasilitas</span>
                   <br />
                   Kastara Ocean
-                </p>
+                </h2>
               </div>
             </FadeIn>
           </div>

@@ -1,8 +1,14 @@
 import React from "react";
+import type { Metadata } from "next";
 import Image from "next/image";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/MotionComponents";
 import CheckListIcon from "@/icons/ChecklistIcon2";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Tentang Kami - LPK Perhotelan & Kapal Pesiar | Kastara Ocean",
+  description: "Kenali Kastara Ocean lebih dekat. Kami adalah LPK perhotelan dan kapal pesiar berintegritas tinggi dengan misi menciptakan talenta muda siap kerja global.",
+};
 
 export default function About() {
   return (
