@@ -35,6 +35,16 @@ export default function Contact() {
 
             {/* LEFT: INFO & AGENTS */}
             <div className="lg:col-span-5 flex flex-col gap-10">
+              <FadeIn direction="up" delay={0.2}>
+                <div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Agen Kami</h3>
+                  <p className="text-gray-600 mb-6">Hubungi langsung representatif kami untuk respon cepat 24 jam via WhatsApp.</p>
+                  <AgentContact />
+                </div>
+              </FadeIn>
+
+              <hr className="border-gray-100" />
+
               <FadeIn direction="up">
                 <div>
                   <h3 className="text-2xl font-bold text-gray-900 mb-6">Informasi Kontak</h3>
@@ -46,7 +56,7 @@ export default function Contact() {
                       </div>
                       <div>
                         <h4 className="font-semibold text-gray-900">Alamat Kantor</h4>
-                        <p className="text-gray-600 leading-relaxed mt-1">Gedung Kastara Tower Lt. 4<br />Jl. Sudirman No. 45, Jakarta Selatan<br />DKI Jakarta 12190</p>
+                        <p className="text-gray-600 leading-relaxed mt-1">Dusun Krajan, RT.01/RW.01, Jatikontal, Kec. Purwodadi, Kabupaten Purworejo, Jawa Tengah 54173</p>
                       </div>
                     </div>
 
@@ -56,7 +66,7 @@ export default function Contact() {
                       </div>
                       <div>
                         <h4 className="font-semibold text-gray-900">Email</h4>
-                        <p className="text-gray-600 leading-relaxed mt-1">info@kastaraocean.com<br />support@kastaraocean.com</p>
+                        <p className="text-gray-600 leading-relaxed mt-1">kastaraocean@gmail.com</p>
                       </div>
                     </div>
 
@@ -73,15 +83,6 @@ export default function Contact() {
                 </div>
               </FadeIn>
 
-              <hr className="border-gray-100" />
-
-              <FadeIn direction="up" delay={0.2}>
-                <div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Agen Kami</h3>
-                  <p className="text-gray-600 mb-6">Hubungi langsung representatif kami untuk respon cepat 24 jam via WhatsApp.</p>
-                  <AgentContact />
-                </div>
-              </FadeIn>
             </div>
 
             {/* RIGHT: CONTACT FORM */}

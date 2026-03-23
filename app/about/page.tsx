@@ -58,7 +58,7 @@ export default function About() {
                       Visi
                     </h3>
                     <p className="text-gray-600 leading-relaxed">
-                      Menjadi jembatan utama dan agensi tenaga kerja terdepan di Indonesia yang mengantarkan talenta lokal menuju panggung perhotelan dan kapal pesiar global secara profesional dan berintegritas.
+                      Menjadi lembaga pelatihan terkemuka dibidang perhotelan dan kapal pesiar yang menghasilkan lulusan berkualitas dengan kompetensi Internasional
                     </p>
                   </div>
                   <div className="bg-white p-6 rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.03)] border border-gray-50">
@@ -66,9 +66,11 @@ export default function About() {
                       Misi
                     </h3>
                     <ul className="text-gray-600 leading-relaxed space-y-2 list-disc pl-5 marker:text-primary">
-                      <li>Memberikan pelatihan dan persiapan standar internasional.</li>
-                      <li>Memastikan penempatan kerja yang aman, legal, dan sesuai kompetensi.</li>
-                      <li>Menjalin kemitraan jangka panjang dengan perusahaan pelayaran dan hotel top dunia.</li>
+                      <li>Menyediakan program pelatihan yang kemprehensif dan berstandar internasional dalam bidang perhotelan dan kapal pesiar.</li>
+                      <li>Mengembangkan kurikulum yang inovatif dan relevan dengan kebutuhan industri perhotelan dan kapal pesiar, serta terus mengikuti perkembangan terbaru.</li>
+                      <li>Menyediakan lingkungan belajar yang memungkinkan mahasiswa untuk mengembangkan keterampilan praktis melalui simulasi dan pengalaman langsung di industri perhotelan.</li>
+                      <li>Membangun kemitraan strategis dengan perusahaan perhotelan dan kapal pesiar untuk memberikan kesempatan magang dan penempatan kerja bagi mahasiswa.</li>
+                      <li>Melakukan pemantauan dan evaluasi berkala terhadap lulusan kami, serta berkomitmen untuk memberikan dukungan karir yang berkelanjutan setelah mereka lulus.</li>
                     </ul>
                   </div>
                 </div>

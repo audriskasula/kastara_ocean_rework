@@ -56,11 +56,7 @@ export default function SwiperTestimonial() {
               <div className="flex items-center gap-4 mt-6 pt-4 border-t border-gray-100">
                 <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-100 shrink-0 border-2 border-white shadow-sm">
                   <Image
-                    src={
-                      item.gender === "female"
-                        ? "/femaleAvatar.svg"
-                        : "/maleAvatar.svg"
-                    }
+                    src={item.image}
                     alt={item.name}
                     width={48}
                     height={48}
@@ -69,7 +65,7 @@ export default function SwiperTestimonial() {
                 </div>
                 <div>
                   <p className="font-bold text-gray-800 text-base leading-tight">{item.name}</p>
-                  <p className="text-sm text-gray-500 font-medium">Alumni Program</p>
+                  <p className="text-sm text-gray-500 font-medium">Alumni {item.program}</p>
                 </div>
               </div>
             </div>

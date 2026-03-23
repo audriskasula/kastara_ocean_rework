@@ -23,6 +23,8 @@ export default function Navbar() {
     { href: "/about", label: "About Us" },
     { href: "/contact", label: "Contact" },
     { href: "/news", label: "News" },
+    { href: "/gallery", label: "Gallery" },
+    { href: "/testimonial", label: "Testimonial" },
   ];
 
   // Lock body ketika sidebar buka

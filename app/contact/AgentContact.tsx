@@ -53,4 +53,10 @@ const nomorTelp = [
     gender: "female",
     link: "https://api.whatsapp.com/send/?phone=62882003209563",
   },
+  {
+    nama: "Mr Audris",
+    nomor: "0812-2147-0700",
+    gender: "male",
+    link: "https://api.whatsapp.com/send/?phone=6281221470700",
+  },
 ];

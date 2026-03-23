@@ -95,62 +95,42 @@ export const partnershipCruise = [
 export const testimonials = [
   {
     name: "Ranti Sotejo",
+    program: "Program Kapal Pesiar",
+    workplace: "Royal Caribbean",
+    image: "/heroHome2.png",
     rating: 5.0,
-    text: "Sekolah ini sangat membantu saya memahami dunia perhotelan dan membuka peluang kerja di kapal pesiar.",
-    gender: "female",
+    text: "Pilihan terbaik dalam hidup saya adalah belajar di Kastara Ocean. Pelatihannya tidak hanya mengedepankan teori, tapi praktek langsung dengan standar kapal pesiar internasional. Kini saya sudah berlayar keliling Eropa!",
+    country: "tr", 
+    countryName: "Turkey"
   },
   {
     name: "Ahmad Raka",
+    program: "Program Perhotelan",
+    workplace: "Hyatt Hotel Internasional",
+    image: "/heroHome1.png", 
     rating: 4.9,
-    text: "Materi yang diajarkan lengkap, dari hospitality hingga persiapan kerja di cruise line.",
-    gender: "male",
+    text: "Saya yang awalnya ragu menjadi sangat percaya diri berkat porsi English Zone dan materi table manner yang intens. Dalam 6 bulan saya sudah diterima bekerja di hotel bintang 5.",
+    country: "us", 
+    countryName: "USA"
   },
   {
     name: "Dina Putri",
+    program: "Program Food & Beverage",
+    workplace: "MSC Cruises",
+    image: "/heroHome.png",
     rating: 5.0,
-    text: "Pelatihannya profesional dan sangat membantu saya lolos seleksi kerja di kapal pesiar.",
-    gender: "female",
-  },
-  {
-    name: "Budi Santoso",
-    rating: 4.8,
-    text: "Instruktur berpengalaman dan memberikan banyak insight tentang dunia kerja perhotelan internasional.",
-    gender: "male",
-  },
-  {
-    name: "Siti Rahma",
-    rating: 5.0,
-    text: "Saya jadi lebih percaya diri setelah mengikuti program ini, terutama untuk karier di kapal pesiar.",
-    gender: "female",
+    text: "Materi F&B yang diajarkan sangat mendekati standar cruise line. Fasilitas lengkap membuat saya terbiasa menggunakan alat-alat profesional. Instrukturnya juga sangat suportif!",
+    country: "it", 
+    countryName: "Italy"
   },
   {
     name: "Andi Pratama",
-    rating: 4.7,
-    text: "Fasilitas lengkap dan praktik langsung membuat saya siap bekerja di industri hospitality.",
-    gender: "male",
-  },
-  {
-    name: "Lina Kusuma",
-    rating: 5.0,
-    text: "Programnya sangat terstruktur dan membantu memahami standar kerja hotel dan cruise internasional.",
-    gender: "female",
-  },
-  {
-    name: "Rizky Hidayat",
+    program: "Program Housekeeping",
+    workplace: "Artotel Hotel",
+    image: "/ruangKelas.svg", 
     rating: 4.8,
-    text: "Banyak tips dan simulasi interview untuk kerja di kapal pesiar yang sangat berguna.",
-    gender: "male",
-  },
-  {
-    name: "Maya Sari",
-    rating: 5.0,
-    text: "Pengalaman belajar yang menyenangkan dan membuka peluang karier di luar negeri.",
-    gender: "female",
-  },
-  {
-    name: "Fajar Nugroho",
-    rating: 4.9,
-    text: "Rekomendasi banget untuk yang ingin berkarier di dunia perhotelan dan kapal pesiar.",
-    gender: "male",
+    text: "Sistem pendidikan 3 bulan teori dan 3 bulan praktik industri benar-benar efektif. Begitu lulus, saya tidak kesulitan untuk beradaptasi dengan ritme kerja perhotelan yang serba cepat.",
+    country: "id", 
+    countryName: "Indonesia"
   },
 ];

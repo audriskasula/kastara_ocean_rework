@@ -100,7 +100,7 @@ export default function HomeClient() {
       </section>
 
       {/* ── PARTNERSHIP HOTELS ── */}
-      <section className="px-6 md:px-10 py-16 md:py-20">
+      <section className="px-6 md:px-10 py-16 md:py-10">
         <FadeIn>
           <div className="text-center mb-4">
             <p className="text-sm uppercase tracking-widest text-gray-400 mb-2">
@@ -166,7 +166,7 @@ export default function HomeClient() {
       <hr className="section-divider" />
 
       {/* ── PARTNERSHIP CRUISE ── */}
-      <section className="px-6 md:px-10 py-16 md:py-20">
+      <section className="px-6 md:px-10 py-16 md:py-5">
         <FadeIn>
           <div className="text-center mb-4">
             <p className="text-sm uppercase tracking-widest text-gray-400 mb-2">

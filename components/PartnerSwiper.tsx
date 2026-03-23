@@ -56,7 +56,7 @@ export default function PartnerSwiper({
                 width={100}
                 height={100}
                 alt={item.name}
-                className="object-contain grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300"
+                className="object-contain group-hover:opacity-100 group-hover:scale-110 transition-all duration-300"
               />
             </div>
           </SwiperSlide>
