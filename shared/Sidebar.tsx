@@ -37,7 +37,7 @@ export default function Sidebar({
   return (
     <>
       <div
-        className={`sidebar overflow-y-auto fixed w-80 h-full left-0 z-50 bg-white/95 backdrop-blur-xl shadow-[20px_0_30px_rgba(0,0,0,0.05)] transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+        className={`sidebar overflow-y-auto fixed w-80 h-full left-0 z-[999] bg-white/95 backdrop-blur-xl shadow-[20px_0_30px_rgba(0,0,0,0.05)] transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -97,9 +97,8 @@ export default function Sidebar({
         </div>
       </div>
 
-      {/* Backdrop overlay */}
       <div
-        className={`fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transition-opacity duration-300 ease-out ${
+        className={`fixed inset-0 bg-black/40 backdrop-blur-sm z-[998] transition-opacity duration-300 ease-out ${
           isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
         onClick={() => setIsOpen(false)}

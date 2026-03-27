@@ -99,7 +99,7 @@ export default function Navbar() {
 
               <Link
                 href="/"
-                className={`ms-3 text-brand flex items-center ${!isLanding ? "md:hidden" : ""
+                className={`ms-3 text-brand flex items-center ${!isLanding ? "lg:hidden" : ""
                   }`}
               >
                 <h6 className="m-0 font-semibold">Kastara Ocean</h6>
@@ -121,7 +121,7 @@ export default function Navbar() {
             </div>
 
             {/* RIGHT DESKTOP */}
-            <div className="hidden md:flex items-center gap-3">
+            <div className="hidden lg:flex items-center gap-3">
               <Link href="/pendaftaran" className="bg-primary hover:bg-rose-700 text-white font-semibold px-6 py-2.5 rounded-full transition-all duration-300 shadow-md hover:shadow-lg text-sm">
                 Daftar Sekarang
               </Link>
@@ -129,7 +129,7 @@ export default function Navbar() {
 
             {/* MOBILE TOGGLE */}
             <button
-              className="md:hidden text-gray-800 p-2"
+              className="lg:hidden text-gray-800 p-2"
               onClick={() => setIsOpen(true)}
             >
               <Hamburger />
@@ -140,7 +140,7 @@ export default function Navbar() {
       </div>
 
       {/* MOBILE FLOATING CTA */}
-      <div className="md:hidden fixed bottom-6 left-0 right-0 z-50 px-5 pointer-events-none">
+      <div className="lg:hidden fixed bottom-6 left-0 right-0 z-50 px-5 pointer-events-none">
         <div className="flex justify-center">
           <Link href="/pendaftaran" className="bg-primary text-white font-bold w-full max-w-sm py-3.5 rounded-full shadow-[0_8px_30px_rgba(225,29,72,0.3)] text-center text-sm tracking-wide pointer-events-auto active:scale-95 transition-transform border border-white/20">
             Daftar Sekarang
