@@ -3,6 +3,8 @@ import Image from "next/image";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/MotionComponents";
 import { supabase } from "@/lib/supabase";
 
+export const dynamic = "force-dynamic";
+
 function formatDate(dateString: string) {
   const date = new Date(dateString);
   return date.toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' });
