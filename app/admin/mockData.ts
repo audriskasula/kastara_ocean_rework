@@ -54,10 +54,10 @@ export interface Student {
 
 // ── Initial Data ──
 
-export const initialTestimonials: any[] = [];
-export const initialComments: any[] = [];
-export const initialNews: any[] = [];
-export const initialStudents: any[] = [];
+export const initialTestimonials: Array<{ id?: string; createdAt: string; [key: string]: unknown }> = [];
+export const initialComments: Array<{ id?: string; createdAt: string; [key: string]: unknown }> = [];
+export const initialNews: Array<{ id?: string; createdAt: string; [key: string]: unknown }> = [];
+export const initialStudents: Array<{ name: string; nis: string; program: string; batch: string; phone: string; email: string; status: string; enrollDate: string }> = [];
 
 // ── LocalStorage Helpers ──
 
