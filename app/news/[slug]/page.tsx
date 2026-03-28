@@ -93,7 +93,7 @@ export default async function NewsDetail({ params }: { params: { slug: string } 
               Berita Terkait Lainnya
             </h2>
             <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {relatedNews.map((rel: any) => (
+              {relatedNews.map((rel: { id: string; title: string; image: string; created_at: string }) => (
                 <StaggerItem key={rel.id}>
                   <Link href={`/news/${rel.id}`} className="group flex flex-col sm:flex-row gap-4 bg-white p-4 rounded-2xl border border-gray-100 hover:shadow-lg transition-all">
                     <div className="relative aspect-video sm:w-32 bg-gray-100 rounded-xl overflow-hidden shrink-0">

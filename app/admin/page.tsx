@@ -35,10 +35,10 @@ export default function AdminDashboard() {
       setComments(co || []);
       setNews(ne || []);
       setLoading(false);
+      setMounted(true);
     }
     
     fetchAll();
-    setMounted(true);
   }, []);
 
   if (!mounted) return null;

@@ -12,7 +12,7 @@ import {
   StudentIcon, 
   UsersRoleIcon, 
   UserProfileIcon 
-} from "@/icons";
+} from "@/icons/icons";
 
 export default function AdminSidebar() {
   const pathname = usePathname();

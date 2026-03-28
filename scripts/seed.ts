@@ -24,7 +24,7 @@ async function seedData() {
   const { error: err1 } = await supabase
     .from("testimonials")
     .upsert(initialTestimonials.map(v => {
-      const { id, createdAt, ...rest } = v;
+      const { createdAt, ...rest } = v;
       return { ...rest, created_at: new Date(createdAt).toISOString() };
     }));
   if (err1) console.error("Error formatting/inserting testimonials:", err1.message);
@@ -33,7 +33,7 @@ async function seedData() {
   const { error: err2 } = await supabase
     .from("comments")
     .upsert(initialComments.map(v => {
-      const { id, createdAt, ...rest } = v;
+      const { createdAt, ...rest } = v;
       return { ...rest, created_at: new Date(createdAt).toISOString() };
     }));
   if (err2) console.error("Error formatting/inserting comments:", err2.message);
@@ -42,7 +42,7 @@ async function seedData() {
   const { error: err3 } = await supabase
     .from("news")
     .upsert(initialNews.map(v => {
-      const { id, createdAt, ...rest } = v;
+      const { createdAt, ...rest } = v;
       return { ...rest, created_at: new Date(createdAt).toISOString() };
     }));
   if (err3) console.error("Error formatting/inserting news:", err3.message);
@@ -50,7 +50,7 @@ async function seedData() {
   console.log("Seeding Students...");
   const { error: err4 } = await supabase
     .from("students")
-    .upsert(initialStudents.map((v: any) => ({
+    .upsert(initialStudents.map((v: { name: string; nis: string; program: string; batch: string; phone: string; email: string; status: string; enrollDate: string }) => ({
       name: v.name,
       nis: v.nis,
       program: v.program,

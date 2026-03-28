@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 
 interface User {
+  id: string;
   username: string;
   name: string;
   email: string;
@@ -23,18 +24,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const ADMIN_CREDENTIALS = {
-  username: "admin",
-  password: "admin123",
-};
-
-const DEFAULT_USER: User = {
-  username: "admin",
-  name: "Admin Kastara",
-  email: "admin@kastaraocean.com",
-  role: "Super Admin",
-  avatar: "/logo.svg",
-};
+// Constants removed since they were unused and causing lint errors
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -81,7 +71,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(userData);
         localStorage.setItem("kastara_admin_session", JSON.stringify(userData));
         return { success: true };
-      } catch (err: any) {
+      } catch {
         return { success: false, error: "Terjadi kesalahan server." };
       }
     },

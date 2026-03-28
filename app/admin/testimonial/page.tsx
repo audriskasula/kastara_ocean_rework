@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import AdminHeader from "@/components/admin/AdminHeader";
 import DataTable, { Column } from "@/components/admin/DataTable";
 import Modal from "@/components/admin/Modal";
@@ -48,12 +48,7 @@ export default function TestimonialPage() {
   const [toast, setToast] = useState("");
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchData();
-    setMounted(true);
-  }, []);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
     const { data: testimonials, error } = await supabase
       .from("testimonials")
@@ -63,7 +58,15 @@ export default function TestimonialPage() {
     if (error) console.error("Error fetching testimonials:", error);
     else setData(testimonials || []);
     setLoading(false);
-  };
+  }, []);
+
+  useEffect(() => {
+    const init = async () => {
+      await fetchData();
+      setMounted(true);
+    };
+    init();
+  }, [fetchData]);
 
   const showToast = (msg: string) => {
     setToast(msg);

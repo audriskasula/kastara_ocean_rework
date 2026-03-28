@@ -50,7 +50,7 @@ export default function ImageUpload({ value, onChange, folder = "uploads" }: Ima
         .getPublicUrl(filePath);
 
       onChange(data.publicUrl);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Upload error:", err);
       setError("Gagal mengupload gambar. Pastikan Storage Bucket 'kastara_images' tersedia.");
     } finally {

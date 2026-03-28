@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { FadeIn, StaggerContainer, StaggerItem } from "@/components/MotionComponents";
+import { FadeIn } from "@/components/MotionComponents";
 import CheckListIcon from "@/icons/ChecklistIcon2";
 
 export default function Pendaftaran() {
@@ -36,7 +36,7 @@ export default function Pendaftaran() {
   };
 
   const validateForm = () => {
-    let newErrors: { [key: string]: string } = {};
+    const newErrors: { [key: string]: string } = {};
 
     if (!formData.namaLengkap.trim()) {
       newErrors.namaLengkap = "Nama lengkap wajib diisi";

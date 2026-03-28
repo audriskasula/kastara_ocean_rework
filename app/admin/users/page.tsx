@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/context/AuthContext";
 import AdminHeader from "@/components/admin/AdminHeader";
 import DataTable, { Column } from "@/components/admin/DataTable";
@@ -46,19 +46,7 @@ export default function AdminUsersPage() {
   const [toast, setToast] = useState("");
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // Role-based Access Protection
-    if (!user) return; 
-    
-    if (user.role !== "Super Admin") {
-      router.replace("/admin");
-    } else {
-      fetchData();
-      setMounted(true);
-    }
-  }, [user, router]);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
     const { data: users, error } = await supabase
       .from("admin_users")
@@ -68,7 +56,22 @@ export default function AdminUsersPage() {
     if (error) console.error("Error fetching users:", error);
     else setData(users || []);
     setLoading(false);
-  };
+  }, []);
+
+  useEffect(() => {
+    // Role-based Access Protection
+    if (!user) return; 
+    
+    if (user.role !== "Super Admin") {
+      router.replace("/admin");
+    } else {
+      const init = async () => {
+        await fetchData();
+        setMounted(true);
+      };
+      init();
+    }
+  }, [user, router, fetchData]);
 
   const showToast = (msg: string) => {
     setToast(msg);
@@ -108,7 +111,7 @@ export default function AdminUsersPage() {
     if (!validate()) return;
 
     // Build the package ignoring password if it wasn't edited
-    const payload: any = {
+    const payload: Partial<AdminUser> & { password?: string } = {
       username: form.username,
       name: form.name,
       role: form.role,

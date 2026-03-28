@@ -71,9 +71,11 @@ export default async function TestimonialPage() {
                     {/* Bendera Negara (menggantikan kutip) */}
                     {testi.country && (
                       <div className="absolute top-0 right-10 -translate-y-1/2 rounded overflow-hidden shadow-md border-2 border-white bg-white w-12 h-9 flex items-center justify-center">
-                        <img
+                        <Image
                           src={`https://flagcdn.com/w80/${testi.country.toLowerCase()}.png`}
                           alt={`Flag of ${testi.countryName || testi.country}`}
+                          width={48}
+                          height={36}
                           className="object-cover w-full h-full"
                         />
                       </div>
@@ -84,7 +86,7 @@ export default async function TestimonialPage() {
                       {testi.program} <span className="text-gray-400 mx-2">•</span> <span className="text-blue-900 font-bold">{testi.workplace}</span>
                     </p>
                     <p className="text-gray-600 text-lg leading-relaxed italic flex-1 flex flex-col mb-4">
-                      "{testi.text}"
+                      &ldquo;{testi.text}&rdquo;
                     </p>
                   </div>
 

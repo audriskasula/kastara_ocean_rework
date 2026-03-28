@@ -7,17 +7,23 @@ import "swiper/css";
 import "swiper/css/pagination";
 import { supabase } from "@/lib/supabase";
 
+interface Comment {
+  id: string;
+  author: string;
+  comment: string;
+}
+
 export default function CommentsSwiper() {
-  const [comments, setComments] = useState<any[]>([]);
+  const [comments, setComments] = useState<Comment[]>([]);
 
   useEffect(() => {
     supabase
       .from("comments")
-      .select("*")
+      .select("id, author, comment")
       .eq("status", "approved")
       .order("created_at", { ascending: false })
       .limit(10)
-      .then(({ data }) => setComments(data || []));
+      .then(({ data }) => setComments((data as Comment[]) || []));
   }, []);
 
   return (
