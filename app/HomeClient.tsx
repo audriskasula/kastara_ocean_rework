@@ -18,6 +18,7 @@ import {
   StaggerContainer,
   StaggerItem,
 } from "@/components/MotionComponents";
+import CommentForm from "@/components/CommentForm";
 
 export default function HomeClient() {
   return (
@@ -232,6 +233,13 @@ export default function HomeClient() {
       {/* ── TESTIMONIAL ── */}
       <section>
         <Testimonial />
+      </section>
+
+      {/* ── COMMENT FORM ── */}
+      <section className="py-20 bg-slate-50 border-t border-gray-100">
+        <div className="max-w-7xl mx-auto px-6">
+          <CommentForm />
+        </div>
       </section>
     </div>
   );
