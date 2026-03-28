@@ -9,12 +9,14 @@ function formatDate(dateString: string) {
   return date.toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' });
 }
 
-export default async function NewsDetail({ params }: { params: { slug: string } }) {
+export default async function NewsDetail({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+
   // Try to fetch by ID (in new mapping we use UUID as slug, but if user inputs regular slug we can change later)
   const { data: article, error } = await supabase
     .from("news")
     .select("*")
-    .eq("id", params.slug)
+    .eq("id", slug)
     .single();
 
   if (error || !article) {
@@ -25,7 +27,7 @@ export default async function NewsDetail({ params }: { params: { slug: string } 
   const { data: relatedNews } = await supabase
     .from("news")
     .select("*")
-    .neq("id", params.slug)
+    .neq("id", slug)
     .eq("status", "published")
     .order("created_at", { ascending: false })
     .limit(2);
