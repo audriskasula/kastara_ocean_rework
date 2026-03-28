@@ -1,12 +1,21 @@
-"use client";
-
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/MotionComponents";
-import { testimonials } from "../dataText";
+import { supabase } from "@/lib/supabase";
 
-export default function TestimonialPage() {
+export default async function TestimonialPage() {
+  const { data: testimonialsItems, error } = await supabase
+    .from("testimonials")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching testimonials:", error);
+  }
+
+  const testimonials = testimonialsItems || [];
+
   return (
     <div className="overflow-x-hidden min-h-screen bg-slate-50">
       {/* ── HERO SECTION ── */}
@@ -43,7 +52,7 @@ export default function TestimonialPage() {
                   {/* Bagian Atas: Foto Murid */}
                   <div className="relative w-full h-64 md:h-72 bg-gray-200 shrink-0">
                     <Image
-                      src={testi.image}
+                      src={testi.image || "/heroHome.png"}
                       alt={`Foto ${testi.name}`}
                       fill
                       className="object-cover"
@@ -53,20 +62,22 @@ export default function TestimonialPage() {
                       <svg className="w-4 h-4 text-amber-500 fill-current" viewBox="0 0 24 24">
                         <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
                       </svg>
-                      <span className="font-bold text-gray-900 text-sm">{testi.rating.toFixed(1)}</span>
+                      <span className="font-bold text-gray-900 text-sm">{Number(testi.rating).toFixed(1)}</span>
                     </div>
                   </div>
 
                   {/* Bagian Bawah: Teks Ulasan */}
                   <div className="p-8 md:p-10 flex-1 flex flex-col relative bg-white z-10">
                     {/* Bendera Negara (menggantikan kutip) */}
-                    <div className="absolute top-0 right-10 -translate-y-1/2 rounded overflow-hidden shadow-md border-2 border-white bg-white w-12 h-9 flex items-center justify-center">
-                      <img
-                        src={`https://flagcdn.com/w80/${testi.country.toLowerCase()}.png`}
-                        alt={`Flag of ${testi.countryName}`}
-                        className="object-cover w-full h-full"
-                      />
-                    </div>
+                    {testi.country && (
+                      <div className="absolute top-0 right-10 -translate-y-1/2 rounded overflow-hidden shadow-md border-2 border-white bg-white w-12 h-9 flex items-center justify-center">
+                        <img
+                          src={`https://flagcdn.com/w80/${testi.country.toLowerCase()}.png`}
+                          alt={`Flag of ${testi.countryName || testi.country}`}
+                          className="object-cover w-full h-full"
+                        />
+                      </div>
+                    )}
 
                     <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900 mb-1">{testi.name}</h2>
                     <p className="text-primary font-semibold text-sm mb-6 uppercase tracking-wider">

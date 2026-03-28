@@ -6,14 +6,21 @@ import DataTable, { Column } from "@/components/admin/DataTable";
 import Modal from "@/components/admin/Modal";
 import DeleteConfirmModal from "@/components/admin/DeleteConfirmModal";
 import FormField from "@/components/admin/FormField";
-import {
-  getData,
-  setData,
-  generateId,
-  initialStudents,
-  formatDate,
-  type Student,
-} from "../mockData";
+import { supabase } from "@/lib/supabase";
+import { formatDate } from "../mockData";
+
+export interface Student {
+  id: string;
+  name: string;
+  nis: string;
+  program: string;
+  batch: string;
+  phone: string;
+  email: string;
+  status: "active" | "graduated" | "dropped";
+  enroll_date: string;
+  created_at: string;
+}
 
 const emptyForm = {
   name: "",
@@ -29,7 +36,7 @@ type FormData = typeof emptyForm;
 type FormErrors = Partial<Record<keyof FormData, string>>;
 
 export default function DataSiswaPage() {
-  const [data, setLocalData] = useState<Student[]>([]);
+  const [data, setData] = useState<Student[]>([]);
   const [mounted, setMounted] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [deleteModal, setDeleteModal] = useState<Student | null>(null);
@@ -37,11 +44,24 @@ export default function DataSiswaPage() {
   const [form, setForm] = useState<FormData>(emptyForm);
   const [errors, setErrors] = useState<FormErrors>({});
   const [toast, setToast] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLocalData(getData("students", initialStudents));
+    fetchData();
     setMounted(true);
   }, []);
+
+  const fetchData = async () => {
+    setLoading(true);
+    const { data: students, error } = await supabase
+      .from("students")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) console.error("Error fetching students:", error);
+    else setData(students || []);
+    setLoading(false);
+  };
 
   const showToast = (msg: string) => {
     setToast(msg);
@@ -54,7 +74,7 @@ export default function DataSiswaPage() {
     if (!form.nis.trim()) e.nis = "NIS wajib diisi";
     if (!form.phone.trim()) e.phone = "No. HP wajib diisi";
     if (!form.email.trim()) e.email = "Email wajib diisi";
-    else if (!/\S+@\S+\.\S+/.test(form.email)) e.email = "Format email tidak valid";
+    else if (!/^\S+@\S+\.\S+$/.test(form.email)) e.email = "Format email tidak valid";
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -81,37 +101,49 @@ export default function DataSiswaPage() {
     setModalOpen(true);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!validate()) return;
 
-    let updated: Student[];
     if (editItem) {
-      updated = data.map((d) =>
-        d.id === editItem.id ? { ...d, ...form } : d
-      );
-      showToast("Data siswa berhasil diperbarui");
+      const { error } = await supabase
+        .from("students")
+        .update(form)
+        .eq("id", editItem.id);
+
+      if (error) console.error("Error updating student:", error);
+      else {
+        showToast("Data siswa berhasil diperbarui");
+        fetchData();
+      }
     } else {
-      const newItem: Student = {
-        id: generateId(),
-        ...form,
-        enrollDate: new Date().toISOString().split("T")[0],
-      };
-      updated = [...data, newItem];
-      showToast("Data siswa berhasil ditambahkan");
+      const { error } = await supabase
+        .from("students")
+        .insert([{ ...form, enroll_date: new Date().toISOString().split("T")[0] }]);
+
+      if (error) console.error("Error inserting student:", error);
+      else {
+        showToast("Data siswa berhasil ditambahkan");
+        fetchData();
+      }
     }
 
-    setLocalData(updated);
-    setData("students", updated);
     setModalOpen(false);
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!deleteModal) return;
-    const updated = data.filter((d) => d.id !== deleteModal.id);
-    setLocalData(updated);
-    setData("students", updated);
+
+    const { error } = await supabase
+      .from("students")
+      .delete()
+      .eq("id", deleteModal.id);
+
+    if (error) console.error("Error deleting student:", error);
+    else {
+      showToast("Data siswa berhasil dihapus");
+      fetchData();
+    }
     setDeleteModal(null);
-    showToast("Data siswa berhasil dihapus");
   };
 
   const columns: Column<Student>[] = [
@@ -157,10 +189,10 @@ export default function DataSiswaPage() {
       ),
     },
     {
-      key: "enrollDate",
+      key: "enroll_date",
       label: "Tgl Masuk",
       render: (item) => (
-        <span style={{ color: "#94a3b8", fontSize: 13 }}>{formatDate(item.enrollDate)}</span>
+        <span style={{ color: "#94a3b8", fontSize: 13 }}>{formatDate(item.enroll_date)}</span>
       ),
     },
   ];
@@ -171,15 +203,19 @@ export default function DataSiswaPage() {
     <>
       <AdminHeader title="Data Siswa" subtitle="Kelola data siswa Kastara Ocean" />
       <div className="admin-content">
-        <DataTable
-          columns={columns}
-          data={data}
-          searchKeys={["name", "nis", "program", "batch", "email"]}
-          onAdd={openAdd}
-          addLabel="Tambah Siswa"
-          onEdit={openEdit}
-          onDelete={(item) => setDeleteModal(item)}
-        />
+        {loading ? (
+          <p>Loading data...</p>
+        ) : (
+          <DataTable
+            columns={columns}
+            data={data}
+            searchKeys={["name", "nis", "program", "batch", "email"]}
+            onAdd={openAdd}
+            addLabel="Tambah Siswa"
+            onEdit={openEdit}
+            onDelete={(item) => setDeleteModal(item)}
+          />
+        )}
       </div>
 
       {/* Add/Edit Modal */}

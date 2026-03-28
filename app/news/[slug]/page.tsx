@@ -1,45 +1,34 @@
 import Image from "next/image";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/MotionComponents";
+import { supabase } from "@/lib/supabase";
 
-export default function NewsDetail({ params }: { params: { slug: string } }) {
-  // In a real app, we'd fetch based on params.slug.
-  // Using dummy data directly here.
-  const article = {
-    title: "5 Persiapan Penting Menghadapi Wawancara Kapal Pesiar",
-    category: "Tips Karier",
-    date: "12 Mar 2026",
-    author: "Tim Redaksi Kastara",
-    readTime: "4 Min Read",
-    image: "/Hotels/ritz.png",
-    content: (
-      <>
-        <p>Industri kapal pesiar (cruise ship) menawarkan prospek karier yang sangat menjanjikan dengan standar penghasilan internasional. Namun, untuk bisa lolos menjadi awak kapal pesiar, Anda harus melewati tahapan seleksi yang cukup ketat, salah satunya adalah tahap wawancara.</p>
-        <p>Wawancara kerja untuk kapal pesiar tidak hanya sekadar menguji kemampuan bahasa Inggris, tetapi juga mentalitas, pengalaman kerja, dan kesiapan operasional di laut. Berikut ini adalah 5 persiapan penting yang wajib Anda perhatikan sebelum menghadapi wawancara:</p>
-        
-        <h3>1. Pahami Visi dan Standar Perusahaan Pelayaran</h3>
-        <p>Setiap perusahaan kapal pesiar memiliki standar layanan pelanggan (hospitality) yang unik. Misalnya, Royal Caribbean fokus pada hiburan keluarga yang dinamis, sementara Holland America Line mungkin lebih mengedepankan keanggunan klasik. Pelajari profil perusahaan yang Anda lamar agar jawaban Anda relevan dengan budaya kerja mereka.</p>
+function formatDate(dateString: string) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' });
+}
 
-        <h3>2. Tingkatkan Kemampuan Bahasa Inggris Praktis</h3>
-        <p>Bahasa Inggris adalah bahasa utama di semua kapal pesiar internasional. Pastikan Anda berlatih skenario percakapan spesifik sesuai posisi yang dilamar. Misalnya, jika Anda melamar sebagai bartender, pelajari glosarium tentang mixology; jika sebagai room attendant, pelajari kosakata seputar tata graha.</p>
+export default async function NewsDetail({ params }: { params: { slug: string } }) {
+  // Try to fetch by ID (in new mapping we use UUID as slug, but if user inputs regular slug we can change later)
+  const { data: article, error } = await supabase
+    .from("news")
+    .select("*")
+    .eq("id", params.slug)
+    .single();
 
-        <h3>3. Siapkan Mental untuk "Working Under Pressure"</h3>
-        <p>Bekerja di kapal pesiar berarti siap bekerja 7 hari seminggu dengan durasi 10-12 jam per hari selama kontrak kerja berlangsung. Saat wawancara, tunjukkan bahwa Anda memiliki stamina fisik dan mental yang kuat. Sampaikan pengalaman nyata saat Anda berhasil menangani situasi di bawah tekanan tinggi.</p>
-        
-        <div className="bg-rose-50 p-6 rounded-2xl border-l-4 border-primary my-8">
-          <p className="font-semibold text-gray-900 m-0 text-lg">"Tunjukkan sikap profesional, ramah (hospitality mind), dan semangat pantang menyerah. Itulah yang dicari para recruiter kapal pesiar."</p>
-        </div>
+  if (error || !article) {
+    notFound();
+  }
 
-        <h3>4. Pengalaman Relevan adalah Kunci</h3>
-        <p>Recruiter akan bertanya secara mendetail mengenai pengalaman kerja Anda sebelumnya. Jangan sekadar bercerita; gunakan metode STAR (Situation, Task, Action, Result) untuk menjelaskan bagaimana Anda menyelesaikan masalah atau memberikan layanan prima kepada tamu VIP.</p>
-
-        <h3>5. Penampilan Profesional dan Grooming</h3>
-        <p>Penampilan fisik (grooming) sangat krusial di industri hospitality. Saat menghadiri wawancara (baik tatap muka maupun online), kenakan pakaian formal, tata rambut dengan sangat rapi, dan pastikan pencahayaan ruangan terang (jika wawancara via zoom/skype).</p>
-        
-        <p>Dengan persiapan yang matang dan percaya diri, peluang Anda untuk mewujudkan mimpi keliling dunia sambil bekerja akan semakin terbuka lebar. Jika Anda butuh bantuan lebih lanjut terkait persiapan dokumen dan simulasi interview, Kastara Ocean memiliki program pelatihan intensif siap kerja yang bisa Anda ikuti!</p>
-      </>
-    )
-  };
+  // Fetch 2 latest non-current news for "Related Posts"
+  const { data: relatedNews } = await supabase
+    .from("news")
+    .select("*")
+    .neq("id", params.slug)
+    .eq("status", "published")
+    .order("created_at", { ascending: false })
+    .limit(2);
 
   return (
     <div className="overflow-x-hidden pt-20 pb-28 bg-white">
@@ -75,11 +64,7 @@ export default function NewsDetail({ params }: { params: { slug: string } }) {
               </div>
               <div className="flex items-center gap-2">
                 <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                {article.date}
-              </div>
-              <div className="flex items-center gap-2">
-                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                {article.readTime}
+                {formatDate(article.created_at)}
               </div>
             </div>
           </div>
@@ -88,13 +73,13 @@ export default function NewsDetail({ params }: { params: { slug: string } }) {
         {/* ── GAMBAR UTAMA ── */}
         <FadeIn delay={0.15}>
           <div className="relative aspect-[16/9] md:aspect-[21/9] w-full bg-gray-100 rounded-2xl md:rounded-[32px] overflow-hidden shadow-sm mb-12">
-            <Image src={article.image} fill alt={article.title} className="object-cover" />
+            <Image src={article.image || "/Hotels/ritz.png"} fill alt={article.title} className="object-cover" />
           </div>
         </FadeIn>
 
         {/* ── ISI KONTEN ── */}
         <FadeIn delay={0.25} direction="up">
-          <div className="prose prose-lg prose-gray max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-a:text-primary hover:prose-a:text-rose-700 prose-img:rounded-2xl">
+          <div className="prose prose-lg prose-gray max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-a:text-primary hover:prose-a:text-rose-700 prose-img:rounded-2xl whitespace-pre-line">
             {article.content}
           </div>
         </FadeIn>
@@ -102,35 +87,28 @@ export default function NewsDetail({ params }: { params: { slug: string } }) {
         <hr className="my-16 border-gray-100" />
 
         {/* ── RELATED POSTS ── */}
-        <FadeIn direction="up">
-          <h2 className="text-2xl font-bold text-gray-900 mb-8 border-l-4 border-primary pl-4">
-            Berita Terkait Lainnya
-          </h2>
-          <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <StaggerItem>
-              <Link href="/news" className="group flex flex-col sm:flex-row gap-4 bg-white p-4 rounded-2xl border border-gray-100 hover:shadow-lg transition-all">
-                <div className="relative aspect-video sm:w-32 bg-gray-100 rounded-xl overflow-hidden shrink-0">
-                  <Image src="/Cruise/cruise1.png" fill alt="Related" className="object-cover group-hover:scale-105 transition-transform" />
-                </div>
-                <div>
-                  <h4 className="font-bold text-gray-900 text-base leading-tight group-hover:text-primary transition-colors line-clamp-2 mb-2">Peluang Kerja Perhotelan di Eropa Timur Meningkat Tajam</h4>
-                  <p className="text-xs text-gray-500 font-medium">08 Mar 2026</p>
-                </div>
-              </Link>
-            </StaggerItem>
-            <StaggerItem>
-              <Link href="/news" className="group flex flex-col sm:flex-row gap-4 bg-white p-4 rounded-2xl border border-gray-100 hover:shadow-lg transition-all">
-                <div className="relative aspect-video sm:w-32 bg-gray-100 rounded-xl overflow-hidden shrink-0">
-                  <Image src="/overlay.png" fill alt="Related" className="object-cover group-hover:scale-105 transition-transform" />
-                </div>
-                <div>
-                  <h4 className="font-bold text-gray-900 text-base leading-tight group-hover:text-primary transition-colors line-clamp-2 mb-2">Kastara Ocean Jalin Kemitraan Baru dengan Jaringan Hotel Mewah</h4>
-                  <p className="text-xs text-gray-500 font-medium">01 Mar 2026</p>
-                </div>
-              </Link>
-            </StaggerItem>
-          </StaggerContainer>
-        </FadeIn>
+        {relatedNews && relatedNews.length > 0 && (
+          <FadeIn direction="up">
+            <h2 className="text-2xl font-bold text-gray-900 mb-8 border-l-4 border-primary pl-4">
+              Berita Terkait Lainnya
+            </h2>
+            <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {relatedNews.map((rel: any) => (
+                <StaggerItem key={rel.id}>
+                  <Link href={`/news/${rel.id}`} className="group flex flex-col sm:flex-row gap-4 bg-white p-4 rounded-2xl border border-gray-100 hover:shadow-lg transition-all">
+                    <div className="relative aspect-video sm:w-32 bg-gray-100 rounded-xl overflow-hidden shrink-0">
+                      <Image src={rel.image || "/overlay.png"} fill alt={rel.title} className="object-cover group-hover:scale-105 transition-transform" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-gray-900 text-base leading-tight group-hover:text-primary transition-colors line-clamp-2 mb-2">{rel.title}</h4>
+                      <p className="text-xs text-gray-500 font-medium">{formatDate(rel.created_at)}</p>
+                    </div>
+                  </Link>
+                </StaggerItem>
+              ))}
+            </StaggerContainer>
+          </FadeIn>
+        )}
 
       </article>
     </div>

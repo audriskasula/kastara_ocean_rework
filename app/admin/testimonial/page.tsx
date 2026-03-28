@@ -6,14 +6,22 @@ import DataTable, { Column } from "@/components/admin/DataTable";
 import Modal from "@/components/admin/Modal";
 import DeleteConfirmModal from "@/components/admin/DeleteConfirmModal";
 import FormField from "@/components/admin/FormField";
-import {
-  getData,
-  setData,
-  generateId,
-  initialTestimonials,
-  formatDate,
-  type Testimonial,
-} from "../mockData";
+import ImageUpload from "@/components/admin/ImageUpload";
+import { supabase } from "@/lib/supabase";
+import { formatDate } from "../mockData"; // You could move formatDate to a utility later
+
+export interface Testimonial {
+  id: string;
+  name: string;
+  program: string;
+  workplace: string;
+  rating: number;
+  text: string;
+  image: string;
+  country: string;
+  countryName: string;
+  created_at: string;
+}
 
 const emptyForm = {
   name: "",
@@ -30,7 +38,7 @@ type FormData = typeof emptyForm;
 type FormErrors = Partial<Record<keyof FormData, string>>;
 
 export default function TestimonialPage() {
-  const [data, setLocalData] = useState<Testimonial[]>([]);
+  const [data, setData] = useState<Testimonial[]>([]);
   const [mounted, setMounted] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [deleteModal, setDeleteModal] = useState<Testimonial | null>(null);
@@ -38,11 +46,24 @@ export default function TestimonialPage() {
   const [form, setForm] = useState<FormData>(emptyForm);
   const [errors, setErrors] = useState<FormErrors>({});
   const [toast, setToast] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLocalData(getData("testimonials", initialTestimonials));
+    fetchData();
     setMounted(true);
   }, []);
+
+  const fetchData = async () => {
+    setLoading(true);
+    const { data: testimonials, error } = await supabase
+      .from("testimonials")
+      .select("*")
+      .order("created_at", { ascending: false });
+    
+    if (error) console.error("Error fetching testimonials:", error);
+    else setData(testimonials || []);
+    setLoading(false);
+  };
 
   const showToast = (msg: string) => {
     setToast(msg);
@@ -84,40 +105,51 @@ export default function TestimonialPage() {
     setModalOpen(true);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!validate()) return;
 
-    let updated: Testimonial[];
     if (editItem) {
-      updated = data.map((d) =>
-        d.id === editItem.id
-          ? { ...d, ...form, rating: parseFloat(form.rating) }
-          : d
-      );
-      showToast("Testimonial berhasil diperbarui");
+      const { error } = await supabase
+        .from("testimonials")
+        .update({ ...form, rating: parseFloat(form.rating) })
+        .eq("id", editItem.id);
+      
+      if (error) {
+        console.error("Error updating:", error);
+      } else {
+        showToast("Testimonial berhasil diperbarui");
+        fetchData();
+      }
     } else {
-      const newItem: Testimonial = {
-        id: generateId(),
-        ...form,
-        rating: parseFloat(form.rating),
-        createdAt: new Date().toISOString().split("T")[0],
-      };
-      updated = [...data, newItem];
-      showToast("Testimonial berhasil ditambahkan");
+      const { error } = await supabase
+        .from("testimonials")
+        .insert([{ ...form, rating: parseFloat(form.rating) }]);
+
+      if (error) {
+        console.error("Error inserting:", error);
+      } else {
+        showToast("Testimonial berhasil ditambahkan");
+        fetchData();
+      }
     }
 
-    setLocalData(updated);
-    setData("testimonials", updated);
     setModalOpen(false);
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!deleteModal) return;
-    const updated = data.filter((d) => d.id !== deleteModal.id);
-    setLocalData(updated);
-    setData("testimonials", updated);
+    const { error } = await supabase
+      .from("testimonials")
+      .delete()
+      .eq("id", deleteModal.id);
+
+    if (error) {
+      console.error("Error deleting:", error);
+    } else {
+      showToast("Testimonial berhasil dihapus");
+      fetchData();
+    }
     setDeleteModal(null);
-    showToast("Testimonial berhasil dihapus");
   };
 
   const columns: Column<Testimonial>[] = [
@@ -132,10 +164,10 @@ export default function TestimonialPage() {
       ),
     },
     {
-      key: "createdAt",
+      key: "created_at",
       label: "Tanggal",
       render: (item) => (
-        <span style={{ color: "#94a3b8", fontSize: 13 }}>{formatDate(item.createdAt)}</span>
+        <span style={{ color: "#94a3b8", fontSize: 13 }}>{formatDate(item.created_at)}</span>
       ),
     },
   ];
@@ -146,15 +178,19 @@ export default function TestimonialPage() {
     <>
       <AdminHeader title="Testimonial" subtitle="Kelola data testimoni alumni" />
       <div className="admin-content">
-        <DataTable
-          columns={columns}
-          data={data}
-          searchKeys={["name", "program", "workplace"]}
-          onAdd={openAdd}
-          addLabel="Tambah Testimonial"
-          onEdit={openEdit}
-          onDelete={(item) => setDeleteModal(item)}
-        />
+        {loading ? (
+          <p>Loading data...</p>
+        ) : (
+          <DataTable
+            columns={columns}
+            data={data}
+            searchKeys={["name", "program", "workplace"]}
+            onAdd={openAdd}
+            addLabel="Tambah Testimonial"
+            onEdit={openEdit}
+            onDelete={(item) => setDeleteModal(item)}
+          />
+        )}
       </div>
 
       {/* Add/Edit Modal */}
@@ -234,10 +270,18 @@ export default function TestimonialPage() {
               className="admin-form-input"
               value={form.country}
               onChange={(e) => setForm({ ...form, country: e.target.value })}
-              placeholder="Contoh: id"
+              placeholder="Contoh: id (Huruf Kecil)"
             />
           </FormField>
         </div>
+
+        <FormField label="Foto Testimonial (Rekomendasi wajah orang/Alumni)" required>
+          <ImageUpload 
+            value={form.image} 
+            onChange={(url: string) => setForm({ ...form, image: url })} 
+            folder="testimonials" 
+          />
+        </FormField>
 
         <FormField label="Testimoni" required error={errors.text}>
           <textarea

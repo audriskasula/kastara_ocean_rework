@@ -6,14 +6,18 @@ import DataTable, { Column } from "@/components/admin/DataTable";
 import Modal from "@/components/admin/Modal";
 import DeleteConfirmModal from "@/components/admin/DeleteConfirmModal";
 import FormField from "@/components/admin/FormField";
-import {
-  getData,
-  setData,
-  generateId,
-  initialComments,
-  formatDate,
-  type Comment,
-} from "../mockData";
+import { supabase } from "@/lib/supabase";
+import { formatDate } from "../mockData";
+
+export interface Comment {
+  id: string;
+  author: string;
+  email: string;
+  comment: string;
+  page: string;
+  status: "approved" | "pending" | "rejected";
+  created_at: string;
+}
 
 const emptyForm = {
   author: "",
@@ -27,7 +31,7 @@ type FormData = typeof emptyForm;
 type FormErrors = Partial<Record<keyof FormData, string>>;
 
 export default function CommentsPage() {
-  const [data, setLocalData] = useState<Comment[]>([]);
+  const [data, setData] = useState<Comment[]>([]);
   const [mounted, setMounted] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [deleteModal, setDeleteModal] = useState<Comment | null>(null);
@@ -35,11 +39,24 @@ export default function CommentsPage() {
   const [form, setForm] = useState<FormData>(emptyForm);
   const [errors, setErrors] = useState<FormErrors>({});
   const [toast, setToast] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLocalData(getData("comments", initialComments));
+    fetchData();
     setMounted(true);
   }, []);
+
+  const fetchData = async () => {
+    setLoading(true);
+    const { data: comments, error } = await supabase
+      .from("comments")
+      .select("*")
+      .order("created_at", { ascending: false });
+    
+    if (error) console.error("Error fetching comments:", error);
+    else setData(comments || []);
+    setLoading(false);
+  };
 
   const showToast = (msg: string) => {
     setToast(msg);
@@ -50,7 +67,7 @@ export default function CommentsPage() {
     const e: FormErrors = {};
     if (!form.author.trim()) e.author = "Nama wajib diisi";
     if (!form.email.trim()) e.email = "Email wajib diisi";
-    else if (!/\S+@\S+\.\S+/.test(form.email)) e.email = "Format email tidak valid";
+    else if (!/^\S+@\S+\.\S+$/.test(form.email)) e.email = "Format email tidak valid";
     if (!form.comment.trim()) e.comment = "Komentar wajib diisi";
     setErrors(e);
     return Object.keys(e).length === 0;
@@ -76,46 +93,50 @@ export default function CommentsPage() {
     setModalOpen(true);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!validate()) return;
 
-    let updated: Comment[];
     if (editItem) {
-      updated = data.map((d) =>
-        d.id === editItem.id ? { ...d, ...form } : d
-      );
-      showToast("Komentar berhasil diperbarui");
+      const { error } = await supabase
+        .from("comments")
+        .update(form)
+        .eq("id", editItem.id);
+
+      if (error) console.error("Error updating comment:", error);
+      else {
+        showToast("Komentar berhasil diperbarui");
+        fetchData();
+      }
     } else {
-      const newItem: Comment = {
-        id: generateId(),
-        ...form,
-        createdAt: new Date().toISOString().split("T")[0],
-      };
-      updated = [...data, newItem];
-      showToast("Komentar berhasil ditambahkan");
+      const { error } = await supabase
+        .from("comments")
+        .insert([form]);
+      
+      if (error) console.error("Error inserting comment:", error);
+      else {
+        showToast("Komentar berhasil ditambahkan");
+        fetchData();
+      }
     }
 
-    setLocalData(updated);
-    setData("comments", updated);
     setModalOpen(false);
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!deleteModal) return;
-    const updated = data.filter((d) => d.id !== deleteModal.id);
-    setLocalData(updated);
-    setData("comments", updated);
-    setDeleteModal(null);
-    showToast("Komentar berhasil dihapus");
-  };
 
-  const handleStatusChange = (item: Comment, status: Comment["status"]) => {
-    const updated = data.map((d) =>
-      d.id === item.id ? { ...d, status } : d
-    );
-    setLocalData(updated);
-    setData("comments", updated);
-    showToast(`Status diubah ke ${status}`);
+    const { error } = await supabase
+      .from("comments")
+      .delete()
+      .eq("id", deleteModal.id);
+
+    if (error) console.error("Error deleting comment:", error);
+    else {
+      showToast("Komentar berhasil dihapus");
+      fetchData();
+    }
+    
+    setDeleteModal(null);
   };
 
   const columns: Column<Comment>[] = [
@@ -148,10 +169,10 @@ export default function CommentsPage() {
       ),
     },
     {
-      key: "createdAt",
+      key: "created_at",
       label: "Tanggal",
       render: (item) => (
-        <span style={{ color: "#94a3b8", fontSize: 13 }}>{formatDate(item.createdAt)}</span>
+        <span style={{ color: "#94a3b8", fontSize: 13 }}>{formatDate(item.created_at)}</span>
       ),
     },
   ];
@@ -162,15 +183,19 @@ export default function CommentsPage() {
     <>
       <AdminHeader title="Comments" subtitle="Kelola komentar pengunjung website" />
       <div className="admin-content">
-        <DataTable
-          columns={columns}
-          data={data}
-          searchKeys={["author", "comment", "page"]}
-          onAdd={openAdd}
-          addLabel="Tambah Komentar"
-          onEdit={openEdit}
-          onDelete={(item) => setDeleteModal(item)}
-        />
+        {loading ? (
+          <p>Loading data...</p>
+        ) : (
+          <DataTable
+            columns={columns}
+            data={data}
+            searchKeys={["author", "comment", "page"]}
+            onAdd={openAdd}
+            addLabel="Tambah Komentar"
+            onEdit={openEdit}
+            onDelete={(item) => setDeleteModal(item)}
+          />
+        )}
       </div>
 
       {/* Add/Edit Modal */}

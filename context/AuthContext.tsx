@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
 
 interface User {
   username: string;
@@ -56,20 +57,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = useCallback(
     async (username: string, password: string): Promise<{ success: boolean; error?: string }> => {
-      // Simulate network delay
-      await new Promise((r) => setTimeout(r, 800));
+      try {
+        const { data: supabaseUser, error } = await supabase
+          .from("admin_users")
+          .select("*")
+          .eq("username", username)
+          .eq("password", password)
+          .single();
 
-      if (
-        username === ADMIN_CREDENTIALS.username &&
-        password === ADMIN_CREDENTIALS.password
-      ) {
-        const userData = { ...DEFAULT_USER };
+        if (error || !supabaseUser) {
+          return { success: false, error: "Username atau password salah" };
+        }
+
+        const userData = {
+          id: supabaseUser.id,
+          username: supabaseUser.username,
+          name: supabaseUser.name,
+          email: `${supabaseUser.username}@kastaraocean.com`, // mock email
+          role: supabaseUser.role || "Admin",
+          avatar: supabaseUser.avatar,
+        };
+
         setUser(userData);
         localStorage.setItem("kastara_admin_session", JSON.stringify(userData));
         return { success: true };
+      } catch (err: any) {
+        return { success: false, error: "Terjadi kesalahan server." };
       }
-
-      return { success: false, error: "Username atau password salah" };
     },
     []
   );

@@ -6,14 +6,21 @@ import DataTable, { Column } from "@/components/admin/DataTable";
 import Modal from "@/components/admin/Modal";
 import DeleteConfirmModal from "@/components/admin/DeleteConfirmModal";
 import FormField from "@/components/admin/FormField";
-import {
-  getData,
-  setData,
-  generateId,
-  initialNews,
-  formatDate,
-  type NewsItem,
-} from "../mockData";
+import ImageUpload from "@/components/admin/ImageUpload";
+import { supabase } from "@/lib/supabase";
+import { formatDate } from "../mockData";
+
+export interface NewsItem {
+  id: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  category: string;
+  image: string;
+  status: "published" | "draft";
+  author: string;
+  created_at: string;
+}
 
 const emptyForm = {
   title: "",
@@ -29,7 +36,7 @@ type FormData = typeof emptyForm;
 type FormErrors = Partial<Record<keyof FormData, string>>;
 
 export default function NewsPage() {
-  const [data, setLocalData] = useState<NewsItem[]>([]);
+  const [data, setData] = useState<NewsItem[]>([]);
   const [mounted, setMounted] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [deleteModal, setDeleteModal] = useState<NewsItem | null>(null);
@@ -37,11 +44,24 @@ export default function NewsPage() {
   const [form, setForm] = useState<FormData>(emptyForm);
   const [errors, setErrors] = useState<FormErrors>({});
   const [toast, setToast] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLocalData(getData("news", initialNews));
+    fetchData();
     setMounted(true);
   }, []);
+
+  const fetchData = async () => {
+    setLoading(true);
+    const { data: news, error } = await supabase
+      .from("news")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) console.error("Error fetching news:", error);
+    else setData(news || []);
+    setLoading(false);
+  };
 
   const showToast = (msg: string) => {
     setToast(msg);
@@ -79,37 +99,48 @@ export default function NewsPage() {
     setModalOpen(true);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!validate()) return;
 
-    let updated: NewsItem[];
     if (editItem) {
-      updated = data.map((d) =>
-        d.id === editItem.id ? { ...d, ...form } : d
-      );
-      showToast("Berita berhasil diperbarui");
-    } else {
-      const newItem: NewsItem = {
-        id: generateId(),
-        ...form,
-        createdAt: new Date().toISOString().split("T")[0],
-      };
-      updated = [...data, newItem];
-      showToast("Berita berhasil ditambahkan");
-    }
+      const { error } = await supabase
+        .from("news")
+        .update(form)
+        .eq("id", editItem.id);
 
-    setLocalData(updated);
-    setData("news", updated);
+      if (error) console.error("Error updating news:", error);
+      else {
+        showToast("Berita berhasil diperbarui");
+        fetchData();
+      }
+    } else {
+      const { error } = await supabase
+        .from("news")
+        .insert([form]);
+
+      if (error) console.error("Error inserting news:", error);
+      else {
+        showToast("Berita berhasil ditambahkan");
+        fetchData();
+      }
+    }
     setModalOpen(false);
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!deleteModal) return;
-    const updated = data.filter((d) => d.id !== deleteModal.id);
-    setLocalData(updated);
-    setData("news", updated);
+
+    const { error } = await supabase
+      .from("news")
+      .delete()
+      .eq("id", deleteModal.id);
+
+    if (error) console.error("Error deleting news:", error);
+    else {
+      showToast("Berita berhasil dihapus");
+      fetchData();
+    }
     setDeleteModal(null);
-    showToast("Berita berhasil dihapus");
   };
 
   const columns: Column<NewsItem>[] = [
@@ -138,10 +169,10 @@ export default function NewsPage() {
     },
     { key: "author", label: "Penulis" },
     {
-      key: "createdAt",
+      key: "created_at",
       label: "Tanggal",
       render: (item) => (
-        <span style={{ color: "#94a3b8", fontSize: 13 }}>{formatDate(item.createdAt)}</span>
+        <span style={{ color: "#94a3b8", fontSize: 13 }}>{formatDate(item.created_at)}</span>
       ),
     },
   ];
@@ -152,15 +183,19 @@ export default function NewsPage() {
     <>
       <AdminHeader title="News" subtitle="Kelola berita dan artikel website" />
       <div className="admin-content">
-        <DataTable
-          columns={columns}
-          data={data}
-          searchKeys={["title", "category", "author"]}
-          onAdd={openAdd}
-          addLabel="Tambah Berita"
-          onEdit={openEdit}
-          onDelete={(item) => setDeleteModal(item)}
-        />
+        {loading ? (
+          <p>Loading data...</p>
+        ) : (
+          <DataTable
+            columns={columns}
+            data={data}
+            searchKeys={["title", "category", "author"]}
+            onAdd={openAdd}
+            addLabel="Tambah Berita"
+            onEdit={openEdit}
+            onDelete={(item) => setDeleteModal(item)}
+          />
+        )}
       </div>
 
       {/* Add/Edit Modal */}
@@ -195,6 +230,14 @@ export default function NewsPage() {
             value={form.excerpt}
             onChange={(e) => setForm({ ...form, excerpt: e.target.value })}
             placeholder="Ringkasan singkat berita"
+          />
+        </FormField>
+
+        <FormField label="Gambar Sampul Berita" required>
+          <ImageUpload 
+            value={form.image} 
+            onChange={(url: string) => setForm({ ...form, image: url })} 
+            folder="news" 
           />
         </FormField>
 
