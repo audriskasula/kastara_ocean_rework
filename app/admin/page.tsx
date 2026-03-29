@@ -44,7 +44,6 @@ export default function AdminDashboard() {
   if (!mounted) return null;
 
   const activeStudents = students.filter((s) => s.status === "active").length;
-  const graduatedStudents = students.filter((s) => s.status === "graduated").length;
   const pendingComments = comments.filter((c) => c.status === "pending").length;
   const publishedNews = news.filter((n) => n.status === "published").length;
 
@@ -125,30 +124,6 @@ export default function AdminDashboard() {
                 value={news.length}
                 trend={{ value: `${publishedNews} published`, direction: "up" }}
                 color="emerald"
-              />
-              <StatsCard
-                icon={
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
-                    <path d="M6 12v5c3 3 10 3 12 0v-5" />
-                  </svg>
-                }
-                label="Lulusan"
-                value={graduatedStudents}
-                color="violet"
-              />
-              <StatsCard
-                icon={
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                    <line x1="16" y1="2" x2="16" y2="6" />
-                    <line x1="8" y1="2" x2="8" y2="6" />
-                    <line x1="3" y1="10" x2="21" y2="10" />
-                  </svg>
-                }
-                label="Batch Aktif"
-                value="Batch 27"
-                color="cyan"
               />
             </div>
 

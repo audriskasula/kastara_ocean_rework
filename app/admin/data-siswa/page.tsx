@@ -12,7 +12,6 @@ import { formatDate } from "../mockData";
 export interface Student {
   id: string;
   name: string;
-  nis: string;
   program: string;
   batch: string;
   phone: string;
@@ -24,7 +23,6 @@ export interface Student {
 
 const emptyForm = {
   name: "",
-  nis: "",
   program: "Kapal Pesiar",
   batch: "Batch 27",
   phone: "",
@@ -74,7 +72,6 @@ export default function DataSiswaPage() {
   const validate = (): boolean => {
     const e: FormErrors = {};
     if (!form.name.trim()) e.name = "Nama wajib diisi";
-    if (!form.nis.trim()) e.nis = "NIS wajib diisi";
     if (!form.phone.trim()) e.phone = "No. HP wajib diisi";
     if (!form.email.trim()) e.email = "Email wajib diisi";
     else if (!/^\S+@\S+\.\S+$/.test(form.email)) e.email = "Format email tidak valid";
@@ -93,7 +90,6 @@ export default function DataSiswaPage() {
     setEditItem(item);
     setForm({
       name: item.name,
-      nis: item.nis,
       program: item.program,
       batch: item.batch,
       phone: item.phone,
@@ -155,15 +151,6 @@ export default function DataSiswaPage() {
       label: "Nama",
       render: (item) => <span style={{ fontWeight: 500 }}>{item.name}</span>,
     },
-    {
-      key: "nis",
-      label: "NIS",
-      render: (item) => (
-        <code style={{ fontSize: 12, background: "#f1f5f9", padding: "2px 8px", borderRadius: 6, color: "#475569" }}>
-          {item.nis}
-        </code>
-      ),
-    },
     { key: "program", label: "Program" },
     {
       key: "batch",
@@ -175,19 +162,18 @@ export default function DataSiswaPage() {
       label: "Status",
       render: (item) => (
         <span
-          className={`admin-badge ${
-            item.status === "active"
-              ? "success"
-              : item.status === "graduated"
+          className={`admin-badge ${item.status === "active"
+            ? "success"
+            : item.status === "graduated"
               ? "info"
               : "danger"
-          }`}
+            }`}
         >
           {item.status === "active"
             ? "Aktif"
             : item.status === "graduated"
-            ? "Lulus"
-            : "Keluar"}
+              ? "Lulus"
+              : "Keluar"}
         </span>
       ),
     },
@@ -238,7 +224,7 @@ export default function DataSiswaPage() {
           </>
         }
       >
-        <div className="admin-form-row">
+        <div>
           <FormField label="Nama Lengkap" required error={errors.name}>
             <input
               className={`admin-form-input ${errors.name ? "error" : ""}`}
@@ -247,26 +233,17 @@ export default function DataSiswaPage() {
               placeholder="Nama lengkap siswa"
             />
           </FormField>
-          <FormField label="NIS" required error={errors.nis}>
-            <input
-              className={`admin-form-input ${errors.nis ? "error" : ""}`}
-              value={form.nis}
-              onChange={(e) => setForm({ ...form, nis: e.target.value })}
-              placeholder="KO-2026-XXX"
-            />
-          </FormField>
         </div>
 
         <div className="admin-form-row">
-          <FormField label="Program" required>
+          <FormField label="Jurusan" required>
             <select
               className="admin-form-select"
               value={form.program}
               onChange={(e) => setForm({ ...form, program: e.target.value })}
             >
-              <option value="Kapal Pesiar">Kapal Pesiar</option>
-              <option value="Perhotelan">Perhotelan</option>
-              <option value="Food & Beverage">Food & Beverage</option>
+              <option value="Food & Beverage Service">Food & Beverage Service</option>
+              <option value="Food & Beverage Product">Food & Beverage Product</option>
               <option value="Housekeeping">Housekeeping</option>
             </select>
           </FormField>
@@ -276,16 +253,17 @@ export default function DataSiswaPage() {
               value={form.batch}
               onChange={(e) => setForm({ ...form, batch: e.target.value })}
             >
-              <option value="Batch 25">Batch 25</option>
-              <option value="Batch 26">Batch 26</option>
-              <option value="Batch 27">Batch 27</option>
-              <option value="Batch 28">Batch 28</option>
+              <option value="Batch 20">Batch 20</option>
+              <option value="Batch 21">Batch 21</option>
+              <option value="Batch 22">Batch 22</option>
+              <option value="Batch 23">Batch 23</option>
+              <option value="Batch 24">Batch 24</option>
             </select>
           </FormField>
         </div>
 
         <div className="admin-form-row">
-          <FormField label="No. HP" required error={errors.phone}>
+          <FormField label="No. HP" error={errors.phone}>
             <input
               type="tel"
               className={`admin-form-input ${errors.phone ? "error" : ""}`}
@@ -294,7 +272,7 @@ export default function DataSiswaPage() {
               placeholder="08xxxxxxxxxx"
             />
           </FormField>
-          <FormField label="Email" required error={errors.email}>
+          <FormField label="Email" error={errors.email}>
             <input
               type="email"
               className={`admin-form-input ${errors.email ? "error" : ""}`}

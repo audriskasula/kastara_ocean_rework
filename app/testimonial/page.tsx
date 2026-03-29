@@ -57,13 +57,6 @@ export default async function TestimonialPage() {
                       fill
                       className="object-cover"
                     />
-                    {/* Badge Rating di Pojok */}
-                    <div className="absolute top-6 right-6 bg-white/95 backdrop-blur-sm px-4 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm">
-                      <svg className="w-4 h-4 text-amber-500 fill-current" viewBox="0 0 24 24">
-                        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                      </svg>
-                      <span className="font-bold text-gray-900 text-sm">{Number(testi.rating).toFixed(1)}</span>
-                    </div>
                   </div>
 
                   {/* Bagian Bawah: Teks Ulasan */}

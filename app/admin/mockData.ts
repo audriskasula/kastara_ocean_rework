@@ -9,7 +9,6 @@ export interface Testimonial {
   name: string;
   program: string;
   workplace: string;
-  rating: number;
   text: string;
   image: string;
   country: string;
@@ -42,7 +41,6 @@ export interface NewsItem {
 export interface Student {
   id: string;
   name: string;
-  nis: string;
   program: string;
   batch: string;
   phone: string;
@@ -54,9 +52,9 @@ export interface Student {
 
 // ── Initial Data ──
 
-export const initialTestimonials: Array<{ id?: string; createdAt: string; [key: string]: unknown }> = [];
-export const initialComments: Array<{ id?: string; createdAt: string; [key: string]: unknown }> = [];
-export const initialNews: Array<{ id?: string; createdAt: string; [key: string]: unknown }> = [];
+export const initialTestimonials: Array<{ id?: string; createdAt: string;[key: string]: unknown }> = [];
+export const initialComments: Array<{ id?: string; createdAt: string;[key: string]: unknown }> = [];
+export const initialNews: Array<{ id?: string; createdAt: string;[key: string]: unknown }> = [];
 export const initialStudents: Array<{ name: string; nis: string; program: string; batch: string; phone: string; email: string; status: string; enrollDate: string }> = [];
 
 // ── LocalStorage Helpers ──

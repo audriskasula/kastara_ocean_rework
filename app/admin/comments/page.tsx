@@ -47,7 +47,7 @@ export default function CommentsPage() {
       .from("comments")
       .select("*")
       .order("created_at", { ascending: false });
-    
+
     if (error) console.error("Error fetching comments:", error);
     else setData(comments || []);
     setLoading(false);
@@ -114,7 +114,7 @@ export default function CommentsPage() {
       const { error } = await supabase
         .from("comments")
         .insert([form]);
-      
+
       if (error) console.error("Error inserting comment:", error);
       else {
         showToast("Komentar berhasil ditambahkan");
@@ -138,7 +138,7 @@ export default function CommentsPage() {
       showToast("Komentar berhasil dihapus");
       fetchData();
     }
-    
+
     setDeleteModal(null);
   };
 
@@ -159,13 +159,12 @@ export default function CommentsPage() {
       label: "Status",
       render: (item) => (
         <span
-          className={`admin-badge ${
-            item.status === "approved"
+          className={`admin-badge ${item.status === "approved"
               ? "success"
               : item.status === "pending"
-              ? "warning"
-              : "danger"
-          }`}
+                ? "warning"
+                : "danger"
+            }`}
         >
           {item.status === "approved" ? "Disetujui" : item.status === "pending" ? "Pending" : "Ditolak"}
         </span>

@@ -22,8 +22,8 @@ export default function AdminHeader({ title, subtitle }: AdminHeaderProps) {
             {user?.name?.charAt(0) || "A"}
           </div>
           <div className="admin-user-info">
-            <span>{user?.name || "Admin"}</span>
-            <small>{user?.role || "Super Admin"}</small>
+            <p className="font-bold text-sm">{user?.name || "Admin"}</p>
+            <p className="text-xs">{user?.role || "Super Admin"}</p>
           </div>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />

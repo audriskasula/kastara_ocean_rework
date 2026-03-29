@@ -8,14 +8,14 @@ import DeleteConfirmModal from "@/components/admin/DeleteConfirmModal";
 import FormField from "@/components/admin/FormField";
 import ImageUpload from "@/components/admin/ImageUpload";
 import { supabase } from "@/lib/supabase";
-import { formatDate } from "../mockData"; // You could move formatDate to a utility later
+import { formatDate } from "../mockData";
+import countryCodes from "../../countryCodes";
 
 export interface Testimonial {
   id: string;
   name: string;
   program: string;
   workplace: string;
-  rating: number;
   text: string;
   image: string;
   country: string;
@@ -27,7 +27,6 @@ const emptyForm = {
   name: "",
   program: "",
   workplace: "",
-  rating: "5.0",
   text: "",
   image: "/heroHome.png",
   country: "id",
@@ -47,6 +46,8 @@ export default function TestimonialPage() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [toast, setToast] = useState("");
   const [loading, setLoading] = useState(true);
+  const [countrySearch, setCountrySearch] = useState("");
+  const [showCountryOptions, setShowCountryOptions] = useState(false);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -79,8 +80,6 @@ export default function TestimonialPage() {
     if (!form.program.trim()) e.program = "Program wajib diisi";
     if (!form.workplace.trim()) e.workplace = "Tempat kerja wajib diisi";
     if (!form.text.trim()) e.text = "Testimoni wajib diisi";
-    const rating = parseFloat(form.rating);
-    if (isNaN(rating) || rating < 0 || rating > 5) e.rating = "Rating harus 0-5";
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -98,7 +97,6 @@ export default function TestimonialPage() {
       name: item.name,
       program: item.program,
       workplace: item.workplace,
-      rating: String(item.rating),
       text: item.text,
       image: item.image,
       country: item.country,
@@ -114,7 +112,7 @@ export default function TestimonialPage() {
     if (editItem) {
       const { error } = await supabase
         .from("testimonials")
-        .update({ ...form, rating: parseFloat(form.rating) })
+        .update(form)
         .eq("id", editItem.id);
       
       if (error) {
@@ -126,7 +124,7 @@ export default function TestimonialPage() {
     } else {
       const { error } = await supabase
         .from("testimonials")
-        .insert([{ ...form, rating: parseFloat(form.rating) }]);
+        .insert([form]);
 
       if (error) {
         console.error("Error inserting:", error);
@@ -160,11 +158,14 @@ export default function TestimonialPage() {
     { key: "program", label: "Program" },
     { key: "workplace", label: "Tempat Kerja" },
     {
-      key: "rating",
-      label: "Rating",
+      key: "countryName",
+      label: "Negara",
       render: (item) => (
-        <span style={{ fontWeight: 600, color: "#f59e0b" }}>⭐ {item.rating}</span>
-      ),
+        <label className="flex items-center gap-2">
+          <img src={`https://flagcdn.com/w20/${item.country}.png`} alt={item.countryName} className="w-5" />
+          {item.countryName}
+        </label>
+      )
     },
     {
       key: "created_at",
@@ -246,35 +247,50 @@ export default function TestimonialPage() {
               placeholder="Contoh: Royal Caribbean"
             />
           </FormField>
-          <FormField label="Rating" required error={errors.rating}>
-            <input
-              type="number"
-              step="0.1"
-              min="0"
-              max="5"
-              className={`admin-form-input ${errors.rating ? "error" : ""}`}
-              value={form.rating}
-              onChange={(e) => setForm({ ...form, rating: e.target.value })}
-            />
-          </FormField>
-        </div>
-
-        <div className="admin-form-row">
-          <FormField label="Negara">
-            <input
-              className="admin-form-input"
-              value={form.countryName}
-              onChange={(e) => setForm({ ...form, countryName: e.target.value })}
-              placeholder="Contoh: Indonesia"
-            />
-          </FormField>
-          <FormField label="Kode Negara">
-            <input
-              className="admin-form-input"
-              value={form.country}
-              onChange={(e) => setForm({ ...form, country: e.target.value })}
-              placeholder="Contoh: id (Huruf Kecil)"
-            />
+          
+          <FormField label="Negara (Searchable)" required>
+            <div className="relative">
+              <input
+                className="admin-form-input"
+                value={showCountryOptions ? countrySearch : form.countryName}
+                onChange={(e) => {
+                  setCountrySearch(e.target.value);
+                  setShowCountryOptions(true);
+                }}
+                onFocus={() => {
+                  setCountrySearch("");
+                  setShowCountryOptions(true);
+                }}
+                placeholder="Ketik nama negara..."
+              />
+              {showCountryOptions && (
+                <div className="absolute z-50 left-0 right-0 mt-1 max-h-60 overflow-y-auto bg-white border border-gray-200 rounded-lg shadow-xl">
+                  {Object.entries(countryCodes)
+                    .filter(([name]) => name.toLowerCase().includes(countrySearch.toLowerCase()))
+                    .slice(0, 50) // Optimization: limit visible options for performance
+                    .map(([name, code]) => (
+                      <div
+                        key={name}
+                        className="px-4 py-2 hover:bg-rose-50 cursor-pointer flex items-center gap-3 transition-colors"
+                        onClick={() => {
+                          setForm({ ...form, countryName: name.charAt(0).toUpperCase() + name.slice(1), country: code });
+                          setShowCountryOptions(false);
+                          setCountrySearch("");
+                        }}
+                      >
+                        <img src={`https://flagcdn.com/w20/${code}.png`} alt={name} className="w-5" />
+                        <span className="text-gray-900 text-sm capitalize">{name}</span>
+                      </div>
+                    ))}
+                  {Object.entries(countryCodes).filter(([name]) => name.toLowerCase().includes(countrySearch.toLowerCase())).length === 0 && (
+                    <div className="px-4 py-3 text-sm text-gray-500 italic">Negara tidak ditemukan</div>
+                  )}
+                </div>
+              )}
+              {showCountryOptions && (
+                <div className="fixed inset-0 z-40" onClick={() => setShowCountryOptions(false)} />
+              )}
+            </div>
           </FormField>
         </div>
 

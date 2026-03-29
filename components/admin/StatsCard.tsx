@@ -16,12 +16,14 @@ export default function StatsCard({ icon, label, value, trend, color }: StatsCar
       <div className={`admin-stat-icon ${color}`}>{icon}</div>
       <div className="admin-stat-content">
         <h3>{label}</h3>
-        <div className="admin-stat-value">{value}</div>
-        {trend && (
-          <div className={`admin-stat-trend ${trend.direction}`}>
-            {trend.direction === "up" ? "↑" : "↓"} {trend.value}
-          </div>
-        )}
+        <div className="flex gap-3 items-center">
+          <div className="admin-stat-value">{value}</div>
+          {trend && (
+            <div className={`admin-stat-trend ${trend.direction}`}>
+              {trend.direction === "up" ? "↑" : "↓"} {trend.value}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
