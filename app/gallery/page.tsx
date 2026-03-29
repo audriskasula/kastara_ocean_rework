@@ -5,12 +5,18 @@ import Image from "next/image";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/MotionComponents";
 
 const galleryImages = [
-  { src: "/heroHome.png", alt: "Siswa sekolah kapal pesiar sedang praktek", span: "md:col-span-2 md:row-span-2" },
   { src: "/ruangFnB.svg", alt: "Fasilitas Food & Beverage sekolah perhotelan", span: "md:col-span-1 md:row-span-1" },
   { src: "/ruangKelas.svg", alt: "Ruang kelas interaktif pendidikan kerja cepat", span: "md:col-span-1 md:row-span-1" },
   { src: "/ruangHousekeeping.svg", alt: "Praktek Housekeeping LPK perhotelan siap kerja", span: "md:col-span-2 md:row-span-1" },
-  { src: "/heroHome1.png", alt: "Kegiatan belajar standar internasional kapal pesiar", span: "md:col-span-1 md:row-span-1" },
-  { src: "/heroHome2.png", alt: "Lulusan unggulan kursus kerja hotel dan cruise", span: "md:col-span-1 md:row-span-1" },
+  { src: "/Gallery/gal1.jpeg", alt: "", span: "md:col-span-2 md:row-span-1" },
+  { src: "/Gallery/gal2.jpeg", alt: "", span: "md:col-span-2 md:row-span-1" },
+  { src: "/Gallery/gal3.jpeg", alt: "", span: "md:col-span-2 md:row-span-1" },
+  { src: "/Gallery/gal4.jpeg", alt: "", span: "md:col-span-2 md:row-span-1" },
+  { src: "/Gallery/gal5.jpeg", alt: "", span: "md:col-span-2 md:row-span-1" },
+  { src: "/Gallery/gal6.jpeg", alt: "", span: "md:col-span-2 md:row-span-1" },
+  { src: "/Gallery/gal7.jpeg", alt: "", span: "md:col-span-2 md:row-span-1" },
+  { src: "/Gallery/gal8.jpeg", alt: "", span: "md:col-span-2 md:row-span-1" },
+  { src: "/Gallery/gal10.jpeg", alt: "", span: "md:col-span-2 md:row-span-1" },
 ];
 
 export default function GalleryPage() {
@@ -27,7 +33,7 @@ export default function GalleryPage() {
             </p>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 mb-6 leading-tight">
               Fasilitas & Dokumentasi <br className="hidden md:block" />
-              <span className="text-primary text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-pink-600">Sekolah Kapal Pesiar</span>
+              <span className="text-primary text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-pink-600">Kastara Ocean</span>
             </h1>
           </FadeIn>
           <FadeIn delay={0.2}>
@@ -55,7 +61,7 @@ export default function GalleryPage() {
                     fill
                     className="object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out"
                   />
-                  
+
                   {/* Overlay Text */}
                   <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-gray-900/90 via-gray-900/40 to-transparent translate-y-full group-hover:translate-y-0 transition-transform duration-500 z-20">
                     <h2 className="text-white font-semibold text-lg">{img.alt}</h2>
@@ -69,11 +75,11 @@ export default function GalleryPage() {
 
       {/* LIGHTBOX MODAL */}
       {selectedImage && (
-        <div 
+        <div
           className="fixed inset-0 z-[100] flex items-center justify-center bg-gray-900/95 p-4 backdrop-blur-sm"
           onClick={() => setSelectedImage(null)}
         >
-          <button 
+          <button
             className="absolute top-6 right-6 text-white/70 hover:text-white transition-colors bg-white/10 p-3 rounded-full hover:bg-white/20"
             onClick={() => setSelectedImage(null)}
           >

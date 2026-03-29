@@ -105,7 +105,7 @@ export default function Pendaftaran() {
             <FadeIn direction="up">
               <div className="inline-flex items-center gap-2 bg-rose-50 text-primary font-bold text-sm px-4 py-2 rounded-full mb-6">
                 <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-                Pendaftaran Dibuka
+                Pendaftaran Selalu Dibuka
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-5xl font-extrabold text-gray-900 mb-6 leading-tight">
                 Mulai Perjalanan <br className="hidden lg:block" />
@@ -143,7 +143,7 @@ export default function Pendaftaran() {
                 <h4 className="font-bold text-xl mb-2 relative z-10">Butuh Bantuan?</h4>
                 <p className="text-gray-300 text-sm mb-4 relative z-10">Tim admin kami siap memandu Anda melalui WhatsApp 24/7.</p>
                 <Link href={"/contact"} className="inline-block bg-white text-blue-950 font-bold px-6 py-2.5 rounded-full text-sm hover:bg-gray-100 transition-colors relative z-10">
-                  Hubungi Agen Kami
+                  Hubungi Tim Kami
                 </Link>
               </div>
             </FadeIn>

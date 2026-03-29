@@ -127,11 +127,11 @@ export default function HomeClient() {
             <FadeIn direction="left">
               <div className="flex justify-center">
                 <Image
-                  src="/hero2.svg"
+                  src="/hero3.jpeg"
                   alt="Kenapa Kastara Ocean"
                   width={420}
                   height={420}
-                  className="h-auto max-w-full drop-shadow-lg"
+                  className="h-auto max-w-full drop-shadow-lg rounded-2xl"
                 />
               </div>
             </FadeIn>

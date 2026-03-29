@@ -22,7 +22,7 @@ export default function About() {
                 Tentang Kami
               </p>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 mb-6 leading-tight">
-                Menghubungkan <span className="text-primary text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-pink-600">Talenta Terbaik</span> ke Seluruh Dunia
+                Bekerja <span className="text-primary text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-pink-600">Sepenuh Hati</span> untuk SDM yang Lebih Baik dan Siap Kerja
               </h1>
             </FadeIn>
             <FadeIn delay={0.2}>
@@ -83,11 +83,10 @@ export default function About() {
       {/* ── STATISTIK ── */}
       <section className="py-20 bg-primary text-white">
         <div className="max-w-7xl mx-auto px-6">
-          <StaggerContainer className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center" staggerDelay={0.1}>
+          <StaggerContainer className="grid grid-cols-2 md:grid-cols-3 gap-8 text-center" staggerDelay={0.1}>
             {[
-              { label: "Talenta Tersalurkan", val: "500+" },
+              { label: "Murid Tersalurkan", val: "150+" },
               { label: "Partner Global", val: "50+" },
-              { label: "Penghargaan", val: "15" },
               { label: "Tahun Pengalaman", val: "10+" },
             ].map((stat, i) => (
               <StaggerItem key={i}>
