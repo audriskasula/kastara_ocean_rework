@@ -9,6 +9,7 @@ import FormField from "@/components/admin/FormField";
 import ImageUpload from "@/components/admin/ImageUpload";
 import { supabase } from "@/lib/supabase";
 import { formatDate } from "../mockData";
+import { useAuth } from "@/context/AuthContext";
 
 export interface NewsItem {
   id: string;
@@ -45,6 +46,7 @@ export default function NewsPage() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [toast, setToast] = useState("");
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -82,7 +84,7 @@ export default function NewsPage() {
 
   const openAdd = () => {
     setEditItem(null);
-    setForm(emptyForm);
+    setForm({ ...emptyForm, author: user?.name || "Admin Kastara" });
     setErrors({});
     setModalOpen(true);
   };

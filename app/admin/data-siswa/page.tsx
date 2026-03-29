@@ -8,26 +8,29 @@ import DeleteConfirmModal from "@/components/admin/DeleteConfirmModal";
 import FormField from "@/components/admin/FormField";
 import { supabase } from "@/lib/supabase";
 import { formatDate } from "../mockData";
+import { useAuth } from "@/context/AuthContext";
 
 export interface Student {
   id: string;
   name: string;
   program: string;
   batch: string;
-  phone: string;
-  email: string;
+  phone?: string;
+  email?: string;
   status: "active" | "graduated" | "dropped";
   enroll_date: string;
+  author?: string;
   created_at: string;
 }
 
 const emptyForm = {
   name: "",
   program: "Kapal Pesiar",
-  batch: "Batch 27",
+  batch: "Batch 24",
   phone: "",
   email: "",
   status: "active" as Student["status"],
+  author: "",
 };
 
 type FormData = typeof emptyForm;
@@ -43,6 +46,7 @@ export default function DataSiswaPage() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [toast, setToast] = useState("");
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -72,16 +76,13 @@ export default function DataSiswaPage() {
   const validate = (): boolean => {
     const e: FormErrors = {};
     if (!form.name.trim()) e.name = "Nama wajib diisi";
-    if (!form.phone.trim()) e.phone = "No. HP wajib diisi";
-    if (!form.email.trim()) e.email = "Email wajib diisi";
-    else if (!/^\S+@\S+\.\S+$/.test(form.email)) e.email = "Format email tidak valid";
     setErrors(e);
     return Object.keys(e).length === 0;
   };
 
   const openAdd = () => {
     setEditItem(null);
-    setForm(emptyForm);
+    setForm({ ...emptyForm, author: user?.name || "Admin Kastara" });
     setErrors({});
     setModalOpen(true);
   };
@@ -92,9 +93,10 @@ export default function DataSiswaPage() {
       name: item.name,
       program: item.program,
       batch: item.batch,
-      phone: item.phone,
-      email: item.email,
+      phone: item.phone || "",
+      email: item.email || "",
       status: item.status,
+      author: item.author || user?.name || "Admin Kastara",
     });
     setErrors({});
     setModalOpen(true);
@@ -184,6 +186,7 @@ export default function DataSiswaPage() {
         <span style={{ color: "#94a3b8", fontSize: 13 }}>{formatDate(item.enroll_date)}</span>
       ),
     },
+    { key: "author", label: "Penulis" },
   ];
 
   if (!mounted) return null;

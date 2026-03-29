@@ -8,6 +8,7 @@ import DeleteConfirmModal from "@/components/admin/DeleteConfirmModal";
 import FormField from "@/components/admin/FormField";
 import { supabase } from "@/lib/supabase";
 import { formatDate } from "../mockData";
+import { useAuth } from "@/context/AuthContext";
 
 export interface Comment {
   id: string;
@@ -40,6 +41,7 @@ export default function CommentsPage() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [toast, setToast] = useState("");
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
 
   const fetchData = useCallback(async () => {
     setLoading(true);

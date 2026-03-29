@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import AdminHeader from "@/components/admin/AdminHeader";
 import StatsCard from "@/components/admin/StatsCard";
 import { supabase } from "@/lib/supabase";
-import { formatDate } from "./mockData"; // You can keep this or move to utils
+import { formatDate } from "./mockData";
 import type { Student, Comment, NewsItem, Testimonial } from "./mockData";
 
 export default function AdminDashboard() {
@@ -22,12 +22,12 @@ export default function AdminDashboard() {
         { data: st },
         { data: te },
         { data: co },
-        { data: ne }
+        { data: ne },
       ] = await Promise.all([
         supabase.from("students").select("*"),
         supabase.from("testimonials").select("*"),
         supabase.from("comments").select("*"),
-        supabase.from("news").select("*")
+        supabase.from("news").select("*"),
       ]);
 
       setStudents(st || []);
@@ -37,7 +37,7 @@ export default function AdminDashboard() {
       setLoading(false);
       setMounted(true);
     }
-    
+
     fetchAll();
   }, []);
 
@@ -47,27 +47,74 @@ export default function AdminDashboard() {
   const pendingComments = comments.filter((c) => c.status === "pending").length;
   const publishedNews = news.filter((n) => n.status === "published").length;
 
-  // Recent activity: combine records from all entities
+  // Build recent activity from existing data, sorted by created_at desc
   const recentItems = [
-    ...students.slice(-3).map((s) => ({
-      type: "Siswa",
-      name: s.name,
-      detail: s.program,
-      date: s.created_at || s.enroll_date, // use created_at mapping
+    ...students.map((s) => ({
+      module: "Siswa",
+      label: s.name,
+      date: s.created_at,
+      author: s.author || "Admin",
     })),
-    ...comments.slice(-3).map((c) => ({
-      type: "Komentar",
-      name: c.author,
-      detail: c.page,
+    ...testimonials.map((t) => ({
+      module: "Testimonial",
+      label: t.name,
+      date: t.created_at,
+      author: t.author || "Admin",
+    })),
+    ...comments.map((c) => ({
+      module: "Komentar",
+      label: c.comment,
       date: c.created_at,
+      author: c.author,
     })),
-    ...news.slice(-2).map((n) => ({
-      type: "Berita",
-      name: n.title.length > 40 ? n.title.slice(0, 40) + "..." : n.title,
-      detail: n.category,
+    ...news.map((n) => ({
+      module: "Berita",
+      label: n.title,
       date: n.created_at,
+      author: n.author,
     })),
-  ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 8);
+  ]
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, 8);
+
+  const moduleConfig: Record<string, { bg: string; text: string; border: string; icon: React.ReactNode }> = {
+    Siswa: {
+      bg: "#fff1f2", text: "#be123c", border: "#fecdd3",
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" width={13} height={13}>
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
+      ),
+    },
+    Testimonial: {
+      bg: "#eff6ff", text: "#1d4ed8", border: "#bfdbfe",
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" width={13} height={13}>
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+        </svg>
+      ),
+    },
+    Komentar: {
+      bg: "#fffbeb", text: "#b45309", border: "#fde68a",
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" width={13} height={13}>
+          <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z" />
+        </svg>
+      ),
+    },
+    Berita: {
+      bg: "#f0fdf4", text: "#15803d", border: "#bbf7d0",
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" width={13} height={13}>
+          <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2" />
+          <rect x="10" y="6" width="8" height="4" rx="1" />
+        </svg>
+      ),
+    },
+  };
 
   return (
     <>
@@ -127,43 +174,65 @@ export default function AdminDashboard() {
               />
             </div>
 
-            {/* Recent Activity Table */}
+            {/* Recent Data Table */}
             <div className="admin-table-container">
               <div className="admin-table-toolbar">
                 <h3 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: "#0f172a" }}>
-                  Aktivitas Terbaru
+                  Data Terbaru
                 </h3>
               </div>
               <table className="admin-table">
                 <thead>
                   <tr>
-                    <th>Tipe</th>
-                    <th>Nama</th>
-                    <th>Detail</th>
+                    <th>Modul</th>
+                    <th>Data</th>
+                    <th>Pembuat</th>
                     <th>Tanggal</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {recentItems.map((item, idx) => (
-                    <tr key={idx}>
-                      <td>
-                        <span
-                          className={`admin-badge ${
-                            item.type === "Siswa"
-                              ? "info"
-                              : item.type === "Komentar"
-                              ? "warning"
-                              : "success"
-                          }`}
-                        >
-                          {item.type}
-                        </span>
+                  {recentItems.length > 0 ? (
+                    recentItems.map((item, idx) => {
+                      const cfg = moduleConfig[item.module];
+                      return (
+                        <tr key={idx}>
+                          <td>
+                            <span
+                              style={{
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: 6,
+                                padding: "4px 10px",
+                                borderRadius: 999,
+                                fontSize: 12,
+                                fontWeight: 600,
+                                background: cfg.bg,
+                                color: cfg.text,
+                                border: `1px solid ${cfg.border}`,
+                                whiteSpace: "nowrap",
+                              }}
+                            >
+                              {cfg.icon}
+                              {item.module}
+                            </span>
+                          </td>
+                          <td style={{ color: "#1e293b", fontWeight: 500, maxWidth: 300, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                            {item.label}
+                          </td>
+                          <td style={{ color: "#64748b", fontSize: 13, fontWeight: 500 }}>
+                            {item.author}
+                          </td>
+                          <td style={{ color: "#94a3b8", fontSize: 13 }}>{formatDate(item.date)}</td>
+                        </tr>
+                      );
+                    })
+                  ) : (
+                    <tr>
+                      <td colSpan={4} style={{ textAlign: "center", color: "#94a3b8", padding: "32px 0" }}>
+                        Belum ada data yang tercatat.
                       </td>
-                      <td style={{ fontWeight: 500 }}>{item.name}</td>
-                      <td style={{ color: "#64748b" }}>{item.detail}</td>
-                      <td style={{ color: "#94a3b8", fontSize: 13 }}>{formatDate(item.date)}</td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>

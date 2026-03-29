@@ -10,6 +10,7 @@ import ImageUpload from "@/components/admin/ImageUpload";
 import { supabase } from "@/lib/supabase";
 import { formatDate } from "../mockData";
 import countryCodes from "../../countryCodes";
+import { useAuth } from "@/context/AuthContext";
 
 export interface Testimonial {
   id: string;
@@ -20,6 +21,7 @@ export interface Testimonial {
   image: string;
   country: string;
   countryName: string;
+  author?: string;
   created_at: string;
 }
 
@@ -31,6 +33,7 @@ const emptyForm = {
   image: "/heroHome.png",
   country: "id",
   countryName: "Indonesia",
+  author: "",
 };
 
 type FormData = typeof emptyForm;
@@ -48,6 +51,7 @@ export default function TestimonialPage() {
   const [loading, setLoading] = useState(true);
   const [countrySearch, setCountrySearch] = useState("");
   const [showCountryOptions, setShowCountryOptions] = useState(false);
+  const { user } = useAuth();
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -86,7 +90,7 @@ export default function TestimonialPage() {
 
   const openAdd = () => {
     setEditItem(null);
-    setForm(emptyForm);
+    setForm({ ...emptyForm, author: user?.name || "Admin Kastara" });
     setErrors({});
     setModalOpen(true);
   };
@@ -101,6 +105,7 @@ export default function TestimonialPage() {
       image: item.image,
       country: item.country,
       countryName: item.countryName,
+      author: item.author || user?.name || "Admin Kastara",
     });
     setErrors({});
     setModalOpen(true);
@@ -167,6 +172,7 @@ export default function TestimonialPage() {
         </label>
       )
     },
+    { key: "author", label: "Penulis" },
     {
       key: "created_at",
       label: "Tanggal",

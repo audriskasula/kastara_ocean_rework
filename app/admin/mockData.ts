@@ -13,6 +13,7 @@ export interface Testimonial {
   image: string;
   country: string;
   countryName: string;
+  author?: string;
   created_at: string;
 }
 
@@ -47,6 +48,7 @@ export interface Student {
   email: string;
   status: "active" | "graduated" | "dropped";
   enroll_date: string;
+  author?: string;
   created_at: string;
 }
 
