@@ -5,116 +5,122 @@ import AdminHeader from "@/components/admin/AdminHeader";
 import StatsCard from "@/components/admin/StatsCard";
 import { supabase } from "@/lib/supabase";
 import { formatDate } from "./mockData";
-import type { Student, Comment, NewsItem, Testimonial } from "./mockData";
+
+const moduleConfig: Record<string, { bg: string; text: string; border: string; icon: React.ReactNode }> = {
+  Siswa: {
+    bg: "#fff1f2", text: "#be123c", border: "#fecdd3",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" width="1em" height="1em">
+        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+        <circle cx="9" cy="7" r="4" />
+        <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+      </svg>
+    ),
+  },
+  Testimonial: {
+    bg: "#eff6ff", text: "#1d4ed8", border: "#bfdbfe",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" width="1em" height="1em">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+      </svg>
+    ),
+  },
+  Komentar: {
+    bg: "#fffbeb", text: "#b45309", border: "#fde68a",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" width="1em" height="1em">
+        <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z" />
+      </svg>
+    ),
+  },
+  Berita: {
+    bg: "#f0fdf4", text: "#15803d", border: "#bbf7d0",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" width="1em" height="1em">
+        <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2" />
+        <rect x="10" y="6" width="8" height="4" rx="1" />
+      </svg>
+    ),
+  },
+};
+
+interface RecentItem {
+  module: string;
+  label: string;
+  date: string;
+  author: string;
+}
 
 export default function AdminDashboard() {
-  const [students, setStudents] = useState<Student[]>([]);
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [news, setNews] = useState<NewsItem[]>([]);
+  const [stats, setStats] = useState({
+    totalStudents: 0, activeStudents: 0,
+    totalTestimonials: 0,
+    totalComments: 0, pendingComments: 0,
+    totalNews: 0, publishedNews: 0,
+  });
+  const [recentItems, setRecentItems] = useState<RecentItem[]>([]);
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchAll() {
+    async function fetchDashboardData() {
       setLoading(true);
+      
+      // 1. Fetch counts only (zero data transfer overhead)
       const [
-        { data: st },
-        { data: te },
-        { data: co },
-        { data: ne },
+        { count: totalStudents }, { count: activeStudents },
+        { count: totalTestimonials },
+        { count: totalComments }, { count: pendingComments },
+        { count: totalNews }, { count: publishedNews },
       ] = await Promise.all([
-        supabase.from("students").select("*"),
-        supabase.from("testimonials").select("*"),
-        supabase.from("comments").select("*"),
-        supabase.from("news").select("*"),
+        supabase.from("students").select("*", { count: "exact", head: true }),
+        supabase.from("students").select("*", { count: "exact", head: true }).eq("status", "active"),
+        supabase.from("testimonials").select("*", { count: "exact", head: true }),
+        supabase.from("comments").select("*", { count: "exact", head: true }),
+        supabase.from("comments").select("*", { count: "exact", head: true }).eq("status", "pending"),
+        supabase.from("news").select("*", { count: "exact", head: true }),
+        supabase.from("news").select("*", { count: "exact", head: true }).eq("status", "published"),
       ]);
 
-      setStudents(st || []);
-      setTestimonials(te || []);
-      setComments(co || []);
-      setNews(ne || []);
+      setStats({
+        totalStudents: totalStudents || 0, activeStudents: activeStudents || 0,
+        totalTestimonials: totalTestimonials || 0,
+        totalComments: totalComments || 0, pendingComments: pendingComments || 0,
+        totalNews: totalNews || 0, publishedNews: publishedNews || 0,
+      });
+
+      // 2. Fetch limited recent items lightweight
+      const [
+        { data: studentsData },
+        { data: testimonialsData },
+        { data: commentsData },
+        { data: newsData },
+      ] = await Promise.all([
+        supabase.from("students").select("name, created_at, author").order("created_at", { ascending: false }).limit(8),
+        supabase.from("testimonials").select("name, created_at, author").order("created_at", { ascending: false }).limit(8),
+        supabase.from("comments").select("comment, created_at, author").order("created_at", { ascending: false }).limit(8),
+        supabase.from("news").select("title, created_at, author").order("created_at", { ascending: false }).limit(8),
+      ]);
+
+      const combinedRecent: RecentItem[] = [
+        ...(studentsData || []).map((s: any) => ({ module: "Siswa", label: s.name, date: s.created_at, author: s.author || "Admin" })),
+        ...(testimonialsData || []).map((t: any) => ({ module: "Testimonial", label: t.name, date: t.created_at, author: t.author || "Admin" })),
+        ...(commentsData || []).map((c: any) => ({ module: "Komentar", label: c.comment, date: c.created_at, author: c.author || "Guest" })),
+        ...(newsData || []).map((n: any) => ({ module: "Berita", label: n.title, date: n.created_at, author: n.author || "Admin" })),
+      ]
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+        .slice(0, 8);
+
+      setRecentItems(combinedRecent);
       setLoading(false);
       setMounted(true);
     }
 
-    fetchAll();
+    fetchDashboardData();
   }, []);
 
   if (!mounted) return null;
-
-  const activeStudents = students.filter((s) => s.status === "active").length;
-  const pendingComments = comments.filter((c) => c.status === "pending").length;
-  const publishedNews = news.filter((n) => n.status === "published").length;
-
-  // Build recent activity from existing data, sorted by created_at desc
-  const recentItems = [
-    ...students.map((s) => ({
-      module: "Siswa",
-      label: s.name,
-      date: s.created_at,
-      author: s.author || "Admin",
-    })),
-    ...testimonials.map((t) => ({
-      module: "Testimonial",
-      label: t.name,
-      date: t.created_at,
-      author: t.author || "Admin",
-    })),
-    ...comments.map((c) => ({
-      module: "Komentar",
-      label: c.comment,
-      date: c.created_at,
-      author: c.author,
-    })),
-    ...news.map((n) => ({
-      module: "Berita",
-      label: n.title,
-      date: n.created_at,
-      author: n.author,
-    })),
-  ]
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, 8);
-
-  const moduleConfig: Record<string, { bg: string; text: string; border: string; icon: React.ReactNode }> = {
-    Siswa: {
-      bg: "#fff1f2", text: "#be123c", border: "#fecdd3",
-      icon: (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" width={13} height={13}>
-          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-          <circle cx="9" cy="7" r="4" />
-          <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-        </svg>
-      ),
-    },
-    Testimonial: {
-      bg: "#eff6ff", text: "#1d4ed8", border: "#bfdbfe",
-      icon: (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" width={13} height={13}>
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-        </svg>
-      ),
-    },
-    Komentar: {
-      bg: "#fffbeb", text: "#b45309", border: "#fde68a",
-      icon: (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" width={13} height={13}>
-          <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z" />
-        </svg>
-      ),
-    },
-    Berita: {
-      bg: "#f0fdf4", text: "#15803d", border: "#bbf7d0",
-      icon: (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" width={13} height={13}>
-          <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2" />
-          <rect x="10" y="6" width="8" height="4" rx="1" />
-        </svg>
-      ),
-    },
-  };
 
   return (
     <>
@@ -127,49 +133,30 @@ export default function AdminDashboard() {
             {/* Stats Grid */}
             <div className="admin-stats-grid">
               <StatsCard
-                icon={
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                    <circle cx="9" cy="7" r="4" />
-                    <path d="M22 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                  </svg>
-                }
+                icon={moduleConfig["Siswa"].icon}
                 label="Total Siswa"
-                value={students.length}
-                trend={{ value: `${activeStudents} aktif`, direction: "up" }}
+                value={stats.totalStudents}
+                trend={{ value: `${stats.activeStudents} aktif`, direction: "up" }}
                 color="rose"
               />
               <StatsCard
-                icon={
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                  </svg>
-                }
+                icon={moduleConfig["Testimonial"].icon}
                 label="Testimonial"
-                value={testimonials.length}
+                value={stats.totalTestimonials}
                 color="blue"
               />
               <StatsCard
-                icon={
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z" />
-                  </svg>
-                }
+                icon={moduleConfig["Komentar"].icon}
                 label="Komentar"
-                value={comments.length}
-                trend={{ value: `${pendingComments} pending`, direction: pendingComments > 0 ? "down" : "up" }}
+                value={stats.totalComments}
+                trend={{ value: `${stats.pendingComments} pending`, direction: stats.pendingComments > 0 ? "down" : "up" }}
                 color="amber"
               />
               <StatsCard
-                icon={
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2" />
-                    <rect x="10" y="6" width="8" height="4" rx="1" />
-                  </svg>
-                }
+                icon={moduleConfig["Berita"].icon}
                 label="Berita"
-                value={news.length}
-                trend={{ value: `${publishedNews} published`, direction: "up" }}
+                value={stats.totalNews}
+                trend={{ value: `${stats.publishedNews} published`, direction: "up" }}
                 color="emerald"
               />
             </div>
@@ -212,7 +199,7 @@ export default function AdminDashboard() {
                                 whiteSpace: "nowrap",
                               }}
                             >
-                              {cfg.icon}
+                              <span style={{ fontSize: 13, display: "flex", alignItems: "center" }}>{cfg.icon}</span>
                               {item.module}
                             </span>
                           </td>

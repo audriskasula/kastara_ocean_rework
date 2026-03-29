@@ -62,19 +62,35 @@ export default function Pendaftaran() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (validateForm()) {
       setIsSubmitting(true);
 
-      // Simulasi API call / Pengiriman Form
-      setTimeout(() => {
+      const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLScj032d8dGuQZaf3EDaWfsgABdYbbJLkH6UPTBofHmWWll88A/formResponse";
+
+      const formDataToSubmit = new FormData();
+      formDataToSubmit.append("entry.632031160", formData.namaLengkap);
+      formDataToSubmit.append("entry.1446579973", formData.usia);
+      formDataToSubmit.append("entry.2010014985", formData.nomorWhatsApp);
+      formDataToSubmit.append("entry.629825756", formData.asalSekolah);
+      formDataToSubmit.append("entry.2010134851", formData.referensi || "-");
+
+      try {
+        await fetch(GOOGLE_FORM_URL, {
+          method: "POST",
+          mode: "no-cors",
+          body: formDataToSubmit,
+        });
+
         setIsSubmitting(false);
         setIsSuccess(true);
-        // Reset form (optional)
-        // setFormData({ namaLengkap: "", usia: "", nomorWhatsApp: "", asalSekolah: "", referensi: "" });
-      }, 1500);
+      } catch (error) {
+        console.error("Error submitting form:", error);
+        setIsSubmitting(false);
+        alert("Terjadi kesalahan saat mengirim pendaftaran. Silakan coba lagi.");
+      }
     }
   };
 

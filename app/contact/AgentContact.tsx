@@ -36,6 +36,12 @@ export default function AgentContact() {
 
 const nomorTelp = [
   {
+    nama: "Miss Reri",
+    nomor: "0812-2723-889",
+    gender: "female",
+    link: "https://api.whatsapp.com/send/?phone=628122723889",
+  },
+  {
     nama: "Mr Bastian",
     nomor: "0822-2087-9544",
     gender: "male",
@@ -52,11 +58,5 @@ const nomorTelp = [
     nomor: "0882-0032-09563",
     gender: "female",
     link: "https://api.whatsapp.com/send/?phone=62882003209563",
-  },
-  {
-    nama: "Mr Audris",
-    nomor: "0812-2147-0700",
-    gender: "male",
-    link: "https://api.whatsapp.com/send/?phone=6281221470700",
   },
 ];
