@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import AdminHeader from "@/components/admin/AdminHeader";
 import StatsCard from "@/components/admin/StatsCard";
+import { TableSkeleton } from "@/components/admin/AdminSkeletons";
 import { supabase } from "@/lib/supabase";
 import { formatDate } from "./mockData";
 
@@ -67,7 +68,6 @@ export default function AdminDashboard() {
     async function fetchDashboardData() {
       setLoading(true);
       
-      // 1. Fetch counts only (zero data transfer overhead)
       const [
         { count: totalStudents }, { count: activeStudents },
         { count: totalTestimonials },
@@ -90,7 +90,6 @@ export default function AdminDashboard() {
         totalNews: totalNews || 0, publishedNews: publishedNews || 0,
       });
 
-      // 2. Fetch limited recent items lightweight
       const [
         { data: studentsData },
         { data: testimonialsData },
@@ -114,9 +113,9 @@ export default function AdminDashboard() {
 
       setRecentItems(combinedRecent);
       setLoading(false);
-      setMounted(true);
     }
 
+    setMounted(true);
     fetchDashboardData();
   }, []);
 
@@ -126,104 +125,105 @@ export default function AdminDashboard() {
     <>
       <AdminHeader title="Dashboard" subtitle="Ringkasan data admin panel" />
       <div className="admin-content">
-        {loading ? (
-          <p>Loading dashboard...</p>
-        ) : (
-          <>
-            {/* Stats Grid */}
-            <div className="admin-stats-grid">
-              <StatsCard
-                icon={moduleConfig["Siswa"].icon}
-                label="Total Siswa"
-                value={stats.totalStudents}
-                trend={{ value: `${stats.activeStudents} aktif`, direction: "up" }}
-                color="rose"
-              />
-              <StatsCard
-                icon={moduleConfig["Testimonial"].icon}
-                label="Testimonial"
-                value={stats.totalTestimonials}
-                color="blue"
-              />
-              <StatsCard
-                icon={moduleConfig["Komentar"].icon}
-                label="Komentar"
-                value={stats.totalComments}
-                trend={{ value: `${stats.pendingComments} pending`, direction: stats.pendingComments > 0 ? "down" : "up" }}
-                color="amber"
-              />
-              <StatsCard
-                icon={moduleConfig["Berita"].icon}
-                label="Berita"
-                value={stats.totalNews}
-                trend={{ value: `${stats.publishedNews} published`, direction: "up" }}
-                color="emerald"
-              />
-            </div>
+        {/* Stats Grid */}
+        <div className="admin-stats-grid">
+          <StatsCard
+            icon={moduleConfig["Siswa"].icon}
+            label="Total Siswa"
+            value={stats.totalStudents}
+            trend={{ value: `${stats.activeStudents} aktif`, direction: "up" }}
+            color="rose"
+            loading={loading}
+          />
+          <StatsCard
+            icon={moduleConfig["Testimonial"].icon}
+            label="Testimonial"
+            value={stats.totalTestimonials}
+            color="blue"
+            loading={loading}
+          />
+          <StatsCard
+            icon={moduleConfig["Komentar"].icon}
+            label="Komentar"
+            value={stats.totalComments}
+            trend={{ value: `${stats.pendingComments} pending`, direction: stats.pendingComments > 0 ? "down" : "up" }}
+            color="amber"
+            loading={loading}
+          />
+          <StatsCard
+            icon={moduleConfig["Berita"].icon}
+            label="Berita"
+            value={stats.totalNews}
+            trend={{ value: `${stats.publishedNews} published`, direction: "up" }}
+            color="emerald"
+            loading={loading}
+          />
+        </div>
 
-            {/* Recent Data Table */}
-            <div className="admin-table-container">
-              <div className="admin-table-toolbar">
-                <h3 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: "#0f172a" }}>
-                  Data Terbaru
-                </h3>
-              </div>
-              <table className="admin-table">
-                <thead>
-                  <tr>
-                    <th>Modul</th>
-                    <th>Data</th>
-                    <th>Pembuat</th>
-                    <th>Tanggal</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {recentItems.length > 0 ? (
-                    recentItems.map((item, idx) => {
-                      const cfg = moduleConfig[item.module];
-                      return (
-                        <tr key={idx}>
-                          <td>
-                            <span
-                              style={{
-                                display: "inline-flex",
-                                alignItems: "center",
-                                gap: 6,
-                                padding: "4px 10px",
-                                borderRadius: 999,
-                                fontSize: 12,
-                                fontWeight: 600,
-                                background: cfg.bg,
-                                color: cfg.text,
-                                border: `1px solid ${cfg.border}`,
-                                whiteSpace: "nowrap",
-                              }}
-                            >
-                              <span style={{ fontSize: 13, display: "flex", alignItems: "center" }}>{cfg.icon}</span>
-                              {item.module}
-                            </span>
-                          </td>
-                          <td style={{ color: "#1e293b", fontWeight: 500, maxWidth: 300, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                            {item.label}
-                          </td>
-                          <td style={{ color: "#64748b", fontSize: 13, fontWeight: 500 }}>
-                            {item.author}
-                          </td>
-                          <td style={{ color: "#94a3b8", fontSize: 13 }}>{formatDate(item.date)}</td>
-                        </tr>
-                      );
-                    })
-                  ) : (
-                    <tr>
-                      <td colSpan={4} style={{ textAlign: "center", color: "#94a3b8", padding: "32px 0" }}>
-                        Belum ada data yang tercatat.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+        {loading ? (
+          <TableSkeleton rows={8} columns={4} />
+        ) : (
+          <div className="admin-table-container">
+            <div className="admin-table-toolbar">
+              <h3 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: "#0f172a" }}>
+                Data Terbaru
+              </h3>
             </div>
-          </>
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Modul</th>
+                  <th>Data</th>
+                  <th>Pembuat</th>
+                  <th>Tanggal</th>
+                </tr>
+              </thead>
+              <tbody>
+                {recentItems.length > 0 ? (
+                  recentItems.map((item, idx) => {
+                    const cfg = moduleConfig[item.module];
+                    return (
+                      <tr key={idx}>
+                        <td>
+                          <span
+                            style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: 6,
+                              padding: "4px 10px",
+                              borderRadius: 999,
+                              fontSize: 12,
+                              fontWeight: 600,
+                              background: cfg.bg,
+                              color: cfg.text,
+                              border: `1px solid ${cfg.border}`,
+                              whiteSpace: "nowrap",
+                            }}
+                          >
+                            <span style={{ fontSize: 13, display: "flex", alignItems: "center" }}>{cfg.icon}</span>
+                            {item.module}
+                          </span>
+                        </td>
+                        <td style={{ color: "#1e293b", fontWeight: 500, maxWidth: 300, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                          {item.label}
+                        </td>
+                        <td style={{ color: "#64748b", fontSize: 13, fontWeight: 500 }}>
+                          {item.author}
+                        </td>
+                        <td style={{ color: "#94a3b8", fontSize: 13 }}>{formatDate(item.date)}</td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td colSpan={4} style={{ textAlign: "center", color: "#94a3b8", padding: "32px 0" }}>
+                      Belum ada data yang tercatat.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </>

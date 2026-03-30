@@ -61,11 +61,8 @@ export default function NewsPage() {
   }, []);
 
   useEffect(() => {
-    const init = async () => {
-      await fetchData();
-      setMounted(true);
-    };
-    init();
+    setMounted(true);
+    fetchData();
   }, [fetchData]);
 
   const showToast = (msg: string) => {
@@ -187,20 +184,18 @@ export default function NewsPage() {
   return (
     <>
       <AdminHeader title="News" subtitle="Kelola berita dan artikel website" />
+
       <div className="admin-content">
-        {loading ? (
-          <p>Loading data...</p>
-        ) : (
-          <DataTable
-            columns={columns}
-            data={data}
-            searchKeys={["title", "category", "author"]}
-            onAdd={openAdd}
-            addLabel="Tambah Berita"
-            onEdit={openEdit}
-            onDelete={(item) => setDeleteModal(item)}
-          />
-        )}
+        <DataTable
+          columns={columns}
+          data={data}
+          loading={loading}
+          searchKeys={["title", "category", "author"]}
+          onAdd={openAdd}
+          addLabel="Tambah Berita"
+          onEdit={openEdit}
+          onDelete={(item) => setDeleteModal(item)}
+        />
       </div>
 
       {/* Add/Edit Modal */}

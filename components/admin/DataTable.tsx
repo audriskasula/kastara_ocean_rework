@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
+import Skeleton from "@/components/Skeleton";
 
 // ── Types ──
 export interface Column<T> {
@@ -89,18 +90,60 @@ export default function DataTable<T extends { id: string }>({
   if (loading) {
     return (
       <div className="admin-table-container">
+        {/* Skeleton Toolbar */}
         <div className="admin-table-toolbar">
           <div className="admin-search-box">
-            <div className="admin-skeleton" style={{ width: 200, height: 16 }} />
+            <Skeleton width="180px" height="20px" />
+          </div>
+          {onAdd && (
+            <Skeleton width="130px" height="38px" borderRadius="10px" />
+          )}
+        </div>
+
+        {/* Skeleton Table */}
+        <div style={{ overflowX: "auto" }}>
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th style={{ width: 48 }}>#</th>
+                {columns.map((col) => (
+                  <th key={col.key}>
+                    <Skeleton width="80px" height="18px" />
+                  </th>
+                ))}
+                {(onEdit || onDelete) && <th style={{ width: 100 }}>Aksi</th>}
+              </tr>
+            </thead>
+            <tbody>
+              {Array.from({ length: pageSize }).map((_, i) => (
+                <tr key={i}>
+                  <td style={{ color: "#94a3b8", fontSize: 13 }}>{i + 1}</td>
+                  {columns.map((col) => (
+                    <td key={col.key}>
+                      <Skeleton width="90%" height="18px" />
+                    </td>
+                  ))}
+                  {(onEdit || onDelete) && (
+                    <td>
+                      <div className="admin-table-actions">
+                        <Skeleton width="32px" height="32px" borderRadius="8px" />
+                        <Skeleton width="32px" height="32px" borderRadius="8px" />
+                      </div>
+                    </td>
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Skeleton Pagination */}
+        <div className="admin-pagination">
+          <Skeleton width="220px" height="16px" />
+          <div className="admin-pagination-controls">
+            <Skeleton width="150px" height="34px" borderRadius="8px" />
           </div>
         </div>
-        {Array.from({ length: 5 }).map((_, i) => (
-          <div key={i} className="admin-skeleton-row">
-            {columns.map((_, j) => (
-              <div key={j} className="admin-skeleton admin-skeleton-cell" />
-            ))}
-          </div>
-        ))}
       </div>
     );
   }

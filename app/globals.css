@@ -110,6 +110,32 @@ h5 {
   animation: fadeInUp 0.6s ease-out both;
 }
 
+/* ── Skeleton loader ── */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #f1f5f9 25%, #f8fafc 50%, #f1f5f9 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+  border-radius: 0.375rem;
+  display: block;
+}
+
+.skeleton-dark {
+  background: linear-gradient(90deg, #334155 25%, #475569 50%, #334155 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+  border-radius: 0.375rem;
+  display: block;
+}
+
 /* ── Mobile responsiveness ── */
 @media screen and (max-width: 768px) {
   /* No more hardcoded heights */

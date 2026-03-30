@@ -66,11 +66,8 @@ export default function TestimonialPage() {
   }, []);
 
   useEffect(() => {
-    const init = async () => {
-      await fetchData();
-      setMounted(true);
-    };
-    init();
+    setMounted(true);
+    fetchData();
   }, [fetchData]);
 
   const showToast = (msg: string) => {
@@ -187,20 +184,18 @@ export default function TestimonialPage() {
   return (
     <>
       <AdminHeader title="Testimonial" subtitle="Kelola data testimoni alumni" />
+
       <div className="admin-content">
-        {loading ? (
-          <p>Loading data...</p>
-        ) : (
-          <DataTable
-            columns={columns}
-            data={data}
-            searchKeys={["name", "program", "workplace"]}
-            onAdd={openAdd}
-            addLabel="Tambah Testimonial"
-            onEdit={openEdit}
-            onDelete={(item) => setDeleteModal(item)}
-          />
-        )}
+        <DataTable
+          columns={columns}
+          data={data}
+          loading={loading}
+          searchKeys={["name", "program", "workplace"]}
+          onAdd={openAdd}
+          addLabel="Tambah Testimonial"
+          onEdit={openEdit}
+          onDelete={(item) => setDeleteModal(item)}
+        />
       </div>
 
       {/* Add/Edit Modal */}

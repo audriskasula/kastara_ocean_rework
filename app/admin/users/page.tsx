@@ -65,11 +65,8 @@ export default function AdminUsersPage() {
     if (user.role !== "Super Admin") {
       router.replace("/admin");
     } else {
-      const init = async () => {
-        await fetchData();
-        setMounted(true);
-      };
-      init();
+      setMounted(true);
+      fetchData();
     }
   }, [user, router, fetchData]);
 
@@ -199,19 +196,16 @@ export default function AdminUsersPage() {
     <>
       <AdminHeader title="Users & Role (RBAC)" subtitle="Kelola pengguna akses dashboard admin" />
       <div className="admin-content">
-        {loading ? (
-          <p>Memuat otoritas...</p>
-        ) : (
-          <DataTable
-            columns={columns}
-            data={data}
-            searchKeys={["username", "name", "role"]}
-            onAdd={openAdd}
-            addLabel="Tambah Akses User"
-            onEdit={openEdit}
-            onDelete={(item) => setDeleteModal(item)}
-          />
-        )}
+        <DataTable
+          columns={columns}
+          data={data}
+          loading={loading}
+          searchKeys={["username", "name", "role"]}
+          onAdd={openAdd}
+          addLabel="Tambah Akses User"
+          onEdit={openEdit}
+          onDelete={(item) => setDeleteModal(item)}
+        />
       </div>
 
       {/* Add/Edit Modal */}

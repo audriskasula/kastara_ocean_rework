@@ -51,11 +51,8 @@ export default function AdminGalleryPage() {
   }, []);
 
   useEffect(() => {
-    const init = async () => {
-      await fetchData();
-      setMounted(true);
-    };
-    init();
+    setMounted(true);
+    fetchData();
   }, [fetchData]);
 
   const showToast = (msg: string) => {
@@ -165,19 +162,16 @@ export default function AdminGalleryPage() {
     <>
       <AdminHeader title="Gallery" subtitle="Kelola foto-foto galeri website" />
       <div className="admin-content">
-        {loading ? (
-          <p>Loading data...</p>
-        ) : (
-          <DataTable
-            columns={columns}
-            data={data}
-            searchKeys={["alt"]}
-            onAdd={openAdd}
-            addLabel="Tambah Foto"
-            onEdit={openEdit}
-            onDelete={(item) => setDeleteModal(item)}
-          />
-        )}
+        <DataTable
+          columns={columns}
+          data={data}
+          loading={loading}
+          searchKeys={["alt"]}
+          onAdd={openAdd}
+          addLabel="Tambah Foto"
+          onEdit={openEdit}
+          onDelete={(item) => setDeleteModal(item)}
+        />
       </div>
 
       {/* Add/Edit Modal */}

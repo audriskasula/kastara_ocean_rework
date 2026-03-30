@@ -56,11 +56,8 @@ export default function CommentsPage() {
   }, []);
 
   useEffect(() => {
-    const init = async () => {
-      await fetchData();
-      setMounted(true);
-    };
-    init();
+    setMounted(true);
+    fetchData();
   }, [fetchData]);
 
   const showToast = (msg: string) => {
@@ -187,19 +184,16 @@ export default function CommentsPage() {
     <>
       <AdminHeader title="Comments" subtitle="Kelola komentar pengunjung website" />
       <div className="admin-content">
-        {loading ? (
-          <p>Loading data...</p>
-        ) : (
-          <DataTable
-            columns={columns}
-            data={data}
-            searchKeys={["author", "comment", "page"]}
-            onAdd={openAdd}
-            addLabel="Tambah Komentar"
-            onEdit={openEdit}
-            onDelete={(item) => setDeleteModal(item)}
-          />
-        )}
+        <DataTable
+          columns={columns}
+          data={data}
+          loading={loading}
+          searchKeys={["author", "comment", "page"]}
+          onAdd={openAdd}
+          addLabel="Tambah Komentar"
+          onEdit={openEdit}
+          onDelete={(item) => setDeleteModal(item)}
+        />
       </div>
 
       {/* Add/Edit Modal */}
