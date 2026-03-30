@@ -1,26 +1,40 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/MotionComponents";
+import { supabase } from "@/lib/supabase";
 
-const galleryImages = [
-  { src: "/ruangFnB.svg", alt: "Fasilitas Food & Beverage sekolah perhotelan", span: "md:col-span-1 md:row-span-1" },
-  { src: "/ruangKelas.svg", alt: "Ruang kelas interaktif pendidikan kerja cepat", span: "md:col-span-1 md:row-span-1" },
-  { src: "/ruangHousekeeping.svg", alt: "Praktek Housekeeping LPK perhotelan siap kerja", span: "md:col-span-2 md:row-span-1" },
-  { src: "/Gallery/gal1.jpeg", alt: "", span: "md:col-span-2 md:row-span-1" },
-  { src: "/Gallery/gal2.jpeg", alt: "", span: "md:col-span-2 md:row-span-1" },
-  { src: "/Gallery/gal3.jpeg", alt: "", span: "md:col-span-2 md:row-span-1" },
-  { src: "/Gallery/gal4.jpeg", alt: "", span: "md:col-span-2 md:row-span-1" },
-  { src: "/Gallery/gal5.jpeg", alt: "", span: "md:col-span-2 md:row-span-1" },
-  { src: "/Gallery/gal6.jpeg", alt: "", span: "md:col-span-2 md:row-span-1" },
-  { src: "/Gallery/gal7.jpeg", alt: "", span: "md:col-span-2 md:row-span-1" },
-  { src: "/Gallery/gal8.jpeg", alt: "", span: "md:col-span-2 md:row-span-1" },
-  { src: "/Gallery/gal10.jpeg", alt: "", span: "md:col-span-2 md:row-span-1" },
-];
+interface GalleryImage {
+  id: number;
+  src: string;
+  alt: string;
+}
 
 export default function GalleryPage() {
+  const [images, setImages] = useState<GalleryImage[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchImages() {
+      try {
+        const { data, error } = await supabase
+          .from("gallery")
+          .select("*")
+          .order("created_at", { ascending: true });
+
+        if (error) throw error;
+        setImages(data || []);
+      } catch (err) {
+        console.error("Error fetching gallery images:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchImages();
+  }, []);
 
   return (
     <div className="overflow-x-hidden min-h-screen bg-slate-50">
@@ -47,29 +61,43 @@ export default function GalleryPage() {
       {/* ── GALLERY GRID ── */}
       <section className="py-20 md:py-28">
         <div className="max-w-7xl mx-auto px-6">
-          <StaggerContainer className="grid grid-cols-1 md:grid-cols-4 auto-rows-[250px] gap-4 md:gap-6" staggerDelay={0.1}>
-            {galleryImages.map((img, idx) => (
-              <StaggerItem key={idx}>
-                <div
-                  className={`relative group rounded-3xl overflow-hidden cursor-pointer shadow-sm hover:shadow-2xl transition-all duration-500 h-full w-full ${img.span}`}
-                  onClick={() => setSelectedImage(img.src)}
-                >
-                  <div className="absolute inset-0 bg-gray-900/10 group-hover:bg-transparent transition-colors duration-500 z-10" />
-                  <Image
-                    src={img.src}
-                    alt={img.alt}
-                    fill
-                    className="object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out"
-                  />
+          {loading ? (
+            <div className="flex justify-center items-center h-40">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+            </div>
+          ) : images.length > 0 ? (
+            <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6" staggerDelay={0.1}>
+              {images.map((img, idx) => (
+                <StaggerItem key={img.id || idx}>
+                  <div
+                    className="relative group rounded-3xl overflow-hidden cursor-pointer shadow-sm hover:shadow-2xl transition-all duration-500 h-64 w-full bg-gray-100"
+                    onClick={() => setSelectedImage(img.src)}
+                  >
+                    <div className="absolute inset-0 bg-gray-900/10 group-hover:bg-transparent transition-colors duration-500 z-10" />
+                    <Image
+                      src={img.src}
+                      alt={img.alt || "Gallery image"}
+                      fill
+                      className="object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                      unoptimized
+                    />
 
-                  {/* Overlay Text */}
-                  <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-gray-900/90 via-gray-900/40 to-transparent translate-y-full group-hover:translate-y-0 transition-transform duration-500 z-20">
-                    <h2 className="text-white font-semibold text-lg">{img.alt}</h2>
+                    {/* Overlay Text */}
+                    {img.alt && (
+                      <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-gray-900/90 via-gray-900/40 to-transparent translate-y-full group-hover:translate-y-0 transition-transform duration-500 z-20">
+                        <h2 className="text-white font-semibold text-sm line-clamp-2">{img.alt}</h2>
+                      </div>
+                    )}
                   </div>
-                </div>
-              </StaggerItem>
-            ))}
-          </StaggerContainer>
+                </StaggerItem>
+              ))}
+            </StaggerContainer>
+          ) : (
+            <div className="text-center py-20 text-gray-500 font-medium h-40 flex items-center justify-center border-2 border-dashed border-gray-200 rounded-3xl">
+              Belum ada foto dalam galeri.
+            </div>
+          )}
         </div>
       </section>
 
@@ -91,6 +119,8 @@ export default function GalleryPage() {
               alt="Zoomed gallery image"
               fill
               className="object-contain"
+              sizes="100vw"
+              unoptimized
             />
           </div>
         </div>

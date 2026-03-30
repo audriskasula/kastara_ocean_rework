@@ -30,7 +30,7 @@ const emptyForm = {
   program: "",
   workplace: "",
   text: "",
-  image: "/heroHome.png",
+  image: "",
   country: "id",
   countryName: "Indonesia",
   author: "",

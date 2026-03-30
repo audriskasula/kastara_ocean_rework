@@ -77,6 +77,7 @@ export default function ImageUpload({ value, onChange, folder = "uploads" }: Ima
                 fill 
                 className="object-contain"
                 sizes="(max-width: 768px) 100vw, 33vw"
+                unoptimized
               />
             </div>
             <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 flex items-center justify-center transition-opacity rounded-xl">

@@ -28,7 +28,7 @@ const emptyForm = {
   excerpt: "",
   content: "",
   category: "Prestasi",
-  image: "/heroHome.png",
+  image: "",
   status: "draft" as NewsItem["status"],
   author: "Admin Kastara",
 };
