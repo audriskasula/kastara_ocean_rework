@@ -9,6 +9,7 @@ import DeleteConfirmModal from "@/components/admin/DeleteConfirmModal";
 import FormField from "@/components/admin/FormField";
 import ImageUpload from "@/components/admin/ImageUpload";
 import { supabase } from "@/lib/supabase";
+import { hashPassword } from "@/lib/crypto";
 import { useRouter } from "next/navigation";
 
 export interface AdminUser {
@@ -33,46 +34,65 @@ type FormData = typeof emptyForm;
 type FormErrors = Partial<Record<keyof FormData, string>>;
 
 export default function AdminUsersPage() {
-  const { user } = useAuth();
+  const { user, resetUserPassword, isSuperAdmin } = useAuth();
   const router = useRouter();
 
   const [data, setData] = useState<AdminUser[]>([]);
   const [mounted, setMounted] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [deleteModal, setDeleteModal] = useState<AdminUser | null>(null);
+  const [resetModal, setResetModal] = useState<AdminUser | null>(null);
+  const [newPwd, setNewPwd] = useState("");
   const [editItem, setEditItem] = useState<AdminUser | null>(null);
   const [form, setForm] = useState<FormData>(emptyForm);
   const [errors, setErrors] = useState<FormErrors>({});
-  const [toast, setToast] = useState("");
+  const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
   const [loading, setLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState(false);
 
   const fetchData = useCallback(async () => {
+    if (!user) return;
     setLoading(true);
-    const { data: users, error } = await supabase
-      .from("admin_users")
-      .select("*")
-      .order("created_at", { ascending: false });
+    try {
+      const fnUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/admin-management`;
+      const response = await fetch(fnUrl, {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "apikey": process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "" 
+        },
+        body: JSON.stringify({ action: "get-users", adminUserId: user.id }),
+      });
 
-    if (error) console.error("Error fetching users:", error);
-    else setData(users || []);
-    setLoading(false);
-  }, []);
+      if (!response.ok) {
+        throw new Error("Gagal mengambil data user");
+      }
+
+      const { data: users } = await response.json();
+      setData(users || []);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      showToast("Gagal memuat daftar pengguna", "error");
+    } finally {
+      setLoading(false);
+    }
+  }, [user]);
 
   useEffect(() => {
     // Role-based Access Protection
     if (!user) return; 
     
-    if (user.role !== "Super Admin") {
+    if (!isSuperAdmin) {
       router.replace("/admin");
     } else {
       setMounted(true);
       fetchData();
     }
-  }, [user, router, fetchData]);
+  }, [user, router, fetchData, isSuperAdmin]);
 
-  const showToast = (msg: string) => {
-    setToast(msg);
-    setTimeout(() => setToast(""), 3000);
+  const showToast = (msg: string, type: "success" | "error" = "success") => {
+    setToast({ msg, type });
+    setTimeout(() => setToast(null), 3000);
   };
 
   const validate = (): boolean => {
@@ -95,7 +115,7 @@ export default function AdminUsersPage() {
     setEditItem(item);
     setForm({
       username: item.username,
-      password: "", // Jangan tampilkan password lama
+      password: "", 
       name: item.name,
       role: item.role,
       avatar: item.avatar,
@@ -107,16 +127,16 @@ export default function AdminUsersPage() {
   const handleSave = async () => {
     if (!validate()) return;
 
-    // Build the package ignoring password if it wasn't edited
+    setActionLoading(true);
     const payload: Partial<AdminUser> & { password?: string } = {
-      username: form.username,
-      name: form.name,
+      username: form.username.trim().toLowerCase(),
+      name: form.name.trim(),
       role: form.role,
       avatar: form.avatar,
     };
 
     if (form.password) {
-      payload.password = form.password; 
+      payload.password = await hashPassword(form.password);
     }
 
     if (editItem) {
@@ -125,40 +145,63 @@ export default function AdminUsersPage() {
         .update(payload)
         .eq("id", editItem.id);
 
-      if (error) console.error("Error updating user:", error);
+      if (error) showToast("Gagal memperbarui pengguna", "error");
       else {
         showToast("Pengguna berhasil diperbarui");
         fetchData();
+        setModalOpen(false);
       }
     } else {
       const { error } = await supabase
         .from("admin_users")
         .insert([payload]);
 
-      if (error) console.error("Error inserting user:", error);
+      if (error) showToast("Gagal menambah pengguna", "error");
       else {
         showToast("Pengguna baru berhasil ditambahkan");
         fetchData();
+        setModalOpen(false);
       }
     }
-
-    setModalOpen(false);
+    setActionLoading(false);
   };
 
   const handleDelete = async () => {
     if (!deleteModal) return;
 
+    setActionLoading(true);
     const { error } = await supabase
       .from("admin_users")
       .delete()
       .eq("id", deleteModal.id);
 
-    if (error) console.error("Error deleting user:", error);
+    if (error) showToast("Gagal menghapus pengguna", "error");
     else {
       showToast("Pengguna berhasil dihapus permanen");
       fetchData();
     }
     setDeleteModal(null);
+    setActionLoading(false);
+  };
+
+  const handleResetPassword = async () => {
+    if (!resetModal || !newPwd.trim()) return;
+    if (newPwd.length < 6) {
+      showToast("Sandi minimal 6 karakter", "error");
+      return;
+    }
+
+    setActionLoading(true);
+    const result = await resetUserPassword(resetModal.id, newPwd);
+    setActionLoading(false);
+
+    if (result.success) {
+      showToast(`Sandi @${resetModal.username} berhasil direset`);
+      setResetModal(null);
+      setNewPwd("");
+    } else {
+      showToast(result.error || "Gagal mereset sandi", "error");
+    }
   };
 
   const columns: Column<AdminUser>[] = [
@@ -180,14 +223,20 @@ export default function AdminUsersPage() {
       ),
     },
     {
-      key: "created_at",
-      label: "Terdaftar Pada",
+      key: "actions",
+      label: "Reset",
       render: (item) => (
-        <span style={{ color: "#94a3b8", fontSize: 13 }}>
-          {new Date(item.created_at).toLocaleDateString("id-ID")}
-        </span>
-      ),
-    },
+        <button 
+          className="admin-btn-icon" 
+          title="Reset Password"
+          onClick={() => { setResetModal(item); setNewPwd(""); }}
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3L15.5 7.5z" />
+          </svg>
+        </button>
+      )
+    }
   ];
 
   if (!mounted || user?.role !== "Super Admin") return null;
@@ -219,8 +268,8 @@ export default function AdminUsersPage() {
             <button className="admin-btn admin-btn-secondary" onClick={() => setModalOpen(false)}>
               Batal
             </button>
-            <button className="admin-btn admin-btn-primary" onClick={handleSave}>
-              {editItem ? "Simpan Perubahan" : "Terbitkan User"}
+            <button className="admin-btn admin-btn-primary" onClick={handleSave} disabled={actionLoading}>
+              {actionLoading ? "Memproses..." : (editItem ? "Simpan Perubahan" : "Terbitkan User")}
             </button>
           </>
         }
@@ -236,7 +285,8 @@ export default function AdminUsersPage() {
           </FormField>
           <FormField label="Password" required={!editItem} error={errors.password}>
             <input
-              type="text"
+              type="password"
+              autoComplete="new-password"
               className={`admin-form-input ${errors.password ? "error" : ""}`}
               value={form.password}
               onChange={(e) => setForm({ ...form, password: e.target.value })}
@@ -275,6 +325,35 @@ export default function AdminUsersPage() {
         </FormField>
       </Modal>
 
+      {/* Reset Password Modal */}
+      <Modal
+        isOpen={!!resetModal}
+        onClose={() => setResetModal(null)}
+        title={`Reset Sandi @${resetModal?.username}`}
+        footer={
+          <>
+            <button className="admin-btn admin-btn-secondary" onClick={() => setResetModal(null)}>Batal</button>
+            <button className="admin-btn admin-btn-primary" onClick={handleResetPassword} disabled={actionLoading}>
+              {actionLoading ? "Memproses..." : "Konfirmasi Reset"}
+            </button>
+          </>
+        }
+      >
+        <p style={{ marginBottom: 15, fontSize: 14, color: "#64748b" }}>
+          Tentukan kata sandi baru untuk <strong>{resetModal?.name}</strong>. User harus diberitahu secara manual setelah reset.
+        </p>
+        <FormField label="Kata Sandi Baru" required>
+          <input
+            type="password"
+            className="admin-form-input"
+            value={newPwd}
+            onChange={(e) => setNewPwd(e.target.value)}
+            placeholder="Minimal 6 karakter"
+            autoFocus
+          />
+        </FormField>
+      </Modal>
+
       {/* Delete Modal */}
       <DeleteConfirmModal
         isOpen={!!deleteModal}
@@ -284,7 +363,31 @@ export default function AdminUsersPage() {
       />
 
       {/* Toast */}
-      {toast && <div className="admin-toast success">{toast}</div>}
+      {toast && (
+        <div className={`admin-toast ${toast.type}`}>
+          {toast.msg}
+        </div>
+      )}
+
+      <style jsx>{`
+        .admin-btn-icon {
+          background: #f1f5f9;
+          border: none;
+          color: #64748b;
+          width: 30px;
+          height: 30px;
+          border-radius: 6px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+        .admin-btn-icon:hover {
+          background: #e2e8f0;
+          color: #1e293b;
+        }
+      `}</style>
     </>
   );
 }

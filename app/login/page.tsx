@@ -12,6 +12,7 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [showForgotModal, setShowForgotModal] = useState(false);
   const { login, isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
 
@@ -136,6 +137,23 @@ export default function LoginPage() {
             </div>
           </div>
 
+          <div style={{ textAlign: "right", marginTop: -15, marginBottom: 20 }}>
+            <button 
+              type="button" 
+              onClick={() => setShowForgotModal(true)}
+              style={{ 
+                fontSize: "13px", 
+                color: "#3b82f6", 
+                background: "none", 
+                border: "none", 
+                cursor: "pointer",
+                fontWeight: 500
+              }}
+            >
+              Lupa password?
+            </button>
+          </div>
+
           <button
             type="submit"
             className="admin-login-btn"
@@ -150,6 +168,64 @@ export default function LoginPage() {
           © 2026 Kastara Ocean Indonesia
         </p>
       </div>
+
+      {/* Forgot Password Modal */}
+      {showForgotModal && (
+        <div className="modal-overlay">
+          <div className="modal-content-small">
+            <h3>Lupa Password?</h3>
+            <p>
+              Untuk melakukan pengaturan ulang kata sandi, harap hubungi <strong>Super Admin</strong> atau 
+              administrator utama tim Kastara Ocean.
+            </p>
+            <p style={{ marginTop: 10 }}>
+              Sertakan username dan bukti identitas untuk verifikasi keamanan.
+            </p>
+            <button 
+              className="admin-btn admin-btn-primary" 
+              style={{ width: "100%", marginTop: 20 }}
+              onClick={() => setShowForgotModal(false)}
+            >
+              Mengerti
+            </button>
+          </div>
+        </div>
+      )}
+
+      <style jsx>{`
+        .modal-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0,0,0,0.5);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 1000;
+          backdrop-filter: blur(4px);
+        }
+        .modal-content-small {
+          background: white;
+          padding: 30px;
+          border-radius: 16px;
+          max-width: 400px;
+          width: 90%;
+          box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+        }
+        .modal-content-small h3 {
+          margin-bottom: 15px;
+          color: #1e293b;
+          font-size: 20px;
+        }
+        .modal-content-small p {
+          color: #64748b;
+          line-height: 1.6;
+          font-size: 14px;
+        }
+      `}</style>
+
     </div>
   );
 }

@@ -16,7 +16,7 @@ import {
 
 export default function AdminSidebar() {
   const pathname = usePathname();
-  const { user, logout } = useAuth();
+  const { user, logout, isSuperAdmin } = useAuth();
 
   const isActive = (href: string) => {
     if (href === "/admin") return pathname === "/admin";
@@ -88,7 +88,7 @@ export default function AdminSidebar() {
   ];
 
   // Add Users & Role if Super Admin
-  if (user?.role === "Super Admin") {
+  if (isSuperAdmin) {
     const sistemSection = menuSections.find(s => s.title === "Sistem & Akun");
     if (sistemSection) {
       sistemSection.items.unshift({
