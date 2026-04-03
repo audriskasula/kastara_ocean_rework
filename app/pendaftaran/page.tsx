@@ -6,7 +6,7 @@ import Link from "next/link";
 import { FadeIn } from "@/components/MotionComponents";
 import CheckListIcon from "@/icons/ChecklistIcon2";
 
-export default function Pendaftaran() {
+export default function Pendaftaran({ customGoogleFormUrl }: { customGoogleFormUrl?: string }) {
   const [formData, setFormData] = useState({
     namaLengkap: "",
     usia: "",
@@ -68,7 +68,8 @@ export default function Pendaftaran() {
     if (validateForm()) {
       setIsSubmitting(true);
 
-      const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLScj032d8dGuQZaf3EDaWfsgABdYbbJLkH6UPTBofHmWWll88A/formResponse";
+      const DEFAULT_URL = "https://docs.google.com/forms/d/e/1FAIpQLScj032d8dGuQZaf3EDaWfsgABdYbbJLkH6UPTBofHmWWll88A/formResponse";
+      const GOOGLE_FORM_URL = customGoogleFormUrl || DEFAULT_URL;
 
       const formDataToSubmit = new FormData();
       formDataToSubmit.append("entry.632031160", formData.namaLengkap);
@@ -80,7 +81,7 @@ export default function Pendaftaran() {
       try {
         await fetch(GOOGLE_FORM_URL, {
           method: "POST",
-          mode: "no-cors",
+          mode: "no-cors", 
           body: formDataToSubmit,
         });
 
