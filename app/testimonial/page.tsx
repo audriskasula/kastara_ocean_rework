@@ -4,6 +4,8 @@ import Link from "next/link";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/MotionComponents";
 import { supabase } from "@/lib/supabase";
 
+export const dynamic = "force-dynamic";
+
 export default async function TestimonialPage() {
   const { data: testimonialsItems, error } = await supabase
     .from("testimonials")
