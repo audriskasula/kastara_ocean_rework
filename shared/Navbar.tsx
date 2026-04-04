@@ -20,7 +20,15 @@ export default function Navbar() {
 
   const navLink = [
     { href: "/", label: "Home" },
-    { href: "/about", label: "About Us" },
+    {
+      href: "/about",
+      label: "About Us",
+      subLinks: [
+        { href: "/about/visi-misi", label: "Visi & Misi" },
+        { href: "/about/legalitas", label: "Izin & Legalitas" },
+        { href: "/about/instruktur", label: "Instruktur" },
+      ],
+    },
     { href: "/contact", label: "Contact" },
     { href: "/news", label: "News" },
     { href: "/gallery", label: "Gallery" },
@@ -106,16 +114,45 @@ export default function Navbar() {
               </Link>
 
               {!isLanding && (
-                <div className="ms-3 text-lg">
-                  {navLink.map((link, index) => (
-                    <Link
-                      key={index}
-                      href={link.href}
-                      className={getLinkClass(link.href)}
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
+                <div className="ms-3 text-lg hidden lg:flex items-center">
+                  {navLink.map((link, index) => {
+                    if (link.subLinks) {
+                      return (
+                        <div key={index} className="group relative">
+                          <span
+                            className={`${getLinkClass(link.href)} !inline-flex items-center gap-1 cursor-pointer`}
+                          >
+                            {link.label}
+                            <svg className="w-4 h-4 transition-transform duration-300 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                          </span>
+                          {/* Dropdown Box */}
+                          <div className="absolute left-1/2 -translate-x-1/2 top-full mt-1 w-48 bg-white rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.08)] border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top group-hover:scale-100 scale-95 flex flex-col overflow-hidden z-[999] py-2">
+                            {link.subLinks.map((sub, i) => (
+                              <Link 
+                                key={i} 
+                                href={sub.href}
+                                className="px-5 py-2.5 text-[15px] font-medium text-gray-700 hover:bg-rose-50/80 hover:text-primary transition-colors"
+                              >
+                                {sub.label}
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
+                      )
+                    }
+
+                    return (
+                      <Link
+                        key={index}
+                        href={link.href}
+                        className={getLinkClass(link.href)}
+                      >
+                        {link.label}
+                      </Link>
+                    )
+                  })}
                 </div>
               )}
             </div>

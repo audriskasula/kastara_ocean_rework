@@ -9,7 +9,7 @@ import type { NextRequest } from 'next/server'
  * Supabase menyimpan session tokens di cookies dengan nama 'sb-[ref]-auth-token'.
  * Kita cek keberadaan cookie tersebut sebagai indikator sesi aktif.
  */
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const isAdminPage = req.nextUrl.pathname.startsWith('/admin')
   const isLoginPage = req.nextUrl.pathname.startsWith('/login')
 

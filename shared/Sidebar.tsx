@@ -1,11 +1,12 @@
 import CloseIcon from "@/icons/CloseIcon";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface NavLink {
   href: string;
   label: string;
+  subLinks?: { href: string; label: string }[];
 }
 
 interface ISidebar {
@@ -21,6 +22,8 @@ export default function Sidebar({
   navLink,
   pathname,
 }: ISidebar) {
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+
   // Handle ESC key to close sidebar
   useEffect(() => {
     const handleEsc = (event: KeyboardEvent) => {
@@ -77,6 +80,42 @@ export default function Sidebar({
               const isActive =
                 pathname === link.href ||
                 (pathname.startsWith(link.href + "/") && link.href !== "/");
+              const isDropdownOpen = openDropdown === link.label;
+
+              if (link.subLinks) {
+                return (
+                  <div key={index} className="flex flex-col">
+                    <div className={`flex justify-between items-center px-5 py-4 rounded-2xl cursor-pointer text-[15px] font-semibold transition-all duration-300 ${isActive ? "bg-primary text-white shadow-md shadow-primary/20" : "text-gray-600 hover:bg-rose-50 hover:text-primary"}`} onClick={() => setOpenDropdown(isDropdownOpen ? null : link.label)}>
+                      <span onClick={(e) => {
+                        // Prevent navigation if we just want to open the dropdown
+                        // Or allow navigation? Usually in mobile, tapping the parent opens the dropdown
+                      }}>{link.label}</span>
+                      <svg
+                        className={`w-4 h-4 transition-transform duration-300 ${isDropdownOpen ? "rotate-180" : ""}`}
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                      </svg>
+                    </div>
+                    
+                    {/* ACCORDION CONTENT */}
+                    <div className={`overflow-hidden transition-all duration-300 ${isDropdownOpen ? "max-h-60 opacity-100 mt-1" : "max-h-0 opacity-0"}`}>
+                      <div className="flex flex-col gap-1 pl-4 border-l-2 border-gray-100 ml-5">
+                        {link.subLinks.map((sub, i) => (
+                          <Link
+                            key={i}
+                            href={sub.href}
+                            onClick={() => setIsOpen(false)}
+                            className="px-4 py-2.5 text-[14px] font-medium text-gray-500 hover:text-primary"
+                          >
+                            {sub.label}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
                 
               return (
                 <Link
