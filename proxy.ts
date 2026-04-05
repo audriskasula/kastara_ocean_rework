@@ -23,12 +23,23 @@ export async function proxy(req: NextRequest) {
 
   const hasSession = !!supabaseSession || !!customSession
 
+  // === KEAMANAN EXTRA: URL LOGIN RAHASIA ===
+  // Menggunakan query parameter `key` untuk membolehkan akses ke halaman login
+  const SECRET_LOGIN_KEY = 'kstaradmin'
+
+  if (isLoginPage && !hasSession) {
+    const key = req.nextUrl.searchParams.get('key')
+    if (key !== SECRET_LOGIN_KEY) {
+      // Jika diakses tanpa parameter kunci yang benar, redirect ke home
+      return NextResponse.redirect(new URL('/', req.url))
+    }
+  }
+
   // 1. Blokir akses ke /admin jika tidak ada session
   if (isAdminPage && !hasSession) {
-    const url = req.nextUrl.clone()
-    url.pathname = '/login'
-    url.searchParams.set('from', req.nextUrl.pathname)
-    return NextResponse.redirect(url)
+    // Alih-alih melempar ke halaman login (yang membocorkan URL admin),
+    // kita lemparkan otomatis kembali ke halaman utama (home)
+    return NextResponse.redirect(new URL('/', req.url))
   }
 
   // 2. Redirect ke /admin jika sudah login dan coba akses /login

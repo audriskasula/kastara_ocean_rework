@@ -48,13 +48,12 @@ export default function LegalitasPage() {
                   <div className="space-y-3 text-gray-600">
                     <div className="flex items-center gap-3">
                       <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
-                      <span className="font-semibold text-gray-800">NPSN:</span>
-                      K9981435
+                      <span><span className="font-semibold text-gray-800">NPSN:</span> K9981435</span>
                     </div>
                     <div className="flex items-center gap-3">
                       <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
-                      <span className="font-semibold text-gray-800">Kinerja (A):</span>
-                      953/D3.02/SK/2024
+                      <span><span className="font-semibold text-gray-800">Kinerja (A):</span> 953/D3.02/SK/2024</span>
+
                     </div>
                   </div>
                 </div>
@@ -101,8 +100,9 @@ export default function LegalitasPage() {
                   <div className="space-y-3 text-gray-600">
                     <div className="flex items-center gap-3">
                       <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
-                      <span className="font-semibold text-gray-800">Terakreditasi:</span>
-                      <span className="text-sm">582/LA-LPK/XII/2023</span>
+                      <span>
+                        <span className="font-semibold text-gray-800">Terakreditasi:</span><span className="text-sm"> 582/LA-LPK/XII/2023</span>
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -125,10 +125,9 @@ export default function LegalitasPage() {
                   <div className="space-y-3 text-gray-600">
                     <div className="flex items-start gap-3">
                       <div className="w-2 h-2 mt-2 rounded-full bg-emerald-500 shrink-0"></div>
-                      <div>
-                        <span className="font-semibold text-gray-800 block">No. Reg:                        <span className="text-sm font-medium">02.056/SK/LSK-PKPI/I/2025</span></span>
-
-                      </div>
+                      <span>
+                        <span className="font-semibold text-gray-800">No. Reg:</span><span className="text-sm"> 02.056/SK/LSK-PKPI/I/2025</span>
+                      </span>
                     </div>
                   </div>
                 </div>
