@@ -1,46 +1,43 @@
 "use client";
 
-import CommentsSwiper from "./CommentsSwiper";
 import { FadeIn } from "./MotionComponents";
+import TestimonialCarousel from "./TestimonialCarousel";
+import Link from "next/link";
 
 export default function Testimonial() {
   return (
-    <div className="bg-gradient-to-br from-rose-50 to-red-50/50">
-      <div className="w-full">
-        <div className="grid grid-cols-1 md:grid-cols-12">
-          {/* LEFT CONTENT */}
-          <div className="md:col-span-4 bg-white flex items-center py-10 md:py-16">
-            <div className="w-full px-6 md:px-12">
-              <FadeIn direction="left">
-                <p className="mb-1 text-primary font-semibold text-sm uppercase tracking-widest">
-                  Suara Mereka
-                </p>
+    <div className="bg-gradient-to-br from-rose-50 via-white to-pink-50/40 py-16 md:py-24">
+      <div className="max-w-7xl mx-auto px-6">
+        {/* Header */}
+        <FadeIn className="text-center mb-12">
+          <p className="text-sm uppercase tracking-widest text-primary font-bold mb-3">
+            Kisah Sukses Alumni
+          </p>
+          <h2 className="text-3xl md:text-5xl font-extrabold text-gray-900 leading-tight mb-4">
+            Apa Kata{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-pink-500">
+              Mereka?
+            </span>
+          </h2>
+          <p className="text-gray-500 text-base md:text-lg max-w-2xl mx-auto">
+            Keberhasilan alumni kami adalah bukti nyata kualitas pelatihan Kastara Ocean. Berganti setiap hari, selalu ada kisah baru untuk menginspirasimu.
+          </p>
+        </FadeIn>
 
-                <h2 className="text-4xl md:text-[54px] font-bold leading-tight m-0">
-                  Apa Kata <br /> Mereka?
-                </h2>
-              </FadeIn>
+        {/* Carousel */}
+        <FadeIn delay={0.15}>
+          <TestimonialCarousel />
+        </FadeIn>
 
-              <FadeIn direction="left" delay={0.2}>
-                <div className="mt-6">
-                  <h3 className="text-2xl md:text-3xl text-primary font-bold mb-2">
-                    Komentar Pengunjung
-                  </h3>
-                  <p className="m-0 font-medium text-gray-500 text-base">
-                    Baca berbagai kesan positif dan pengalaman inspiratif dari alumni dan pengunjung setia kami.
-                  </p>
-                </div>
-              </FadeIn>
-            </div>
-          </div>
-
-          {/* RIGHT CONTENT */}
-          <div className="md:col-span-8 flex items-center py-10 md:py-16 px-5">
-            <FadeIn direction="right" className="w-full">
-              <CommentsSwiper />
-            </FadeIn>
-          </div>
-        </div>
+        {/* CTA */}
+        <FadeIn delay={0.3} className="text-center mt-10">
+          <Link
+            href="/testimonial"
+            className="inline-block border-2 border-primary text-primary font-semibold px-8 py-3 rounded-full hover:bg-primary hover:text-white transition-all duration-300"
+          >
+            Lihat Semua Kisah Sukses →
+          </Link>
+        </FadeIn>
       </div>
     </div>
   );
