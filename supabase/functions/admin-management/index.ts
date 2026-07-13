@@ -44,22 +44,26 @@ serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
-    const { action, userId, oldPassword, newPassword, adminUserId } = await req.json();
+    const { action, userId, oldPassword, newPassword, adminUserId, userData } = await req.json();
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    // ── ACTION: GET ALL USERS (Super Admin Only) ──
-    if (action === "get-users") {
-      const { data: admin, error: adminError } = await supabase
+    // ── Helper: Verify Super Admin ──
+    async function verifySuperAdmin(id: string): Promise<boolean> {
+      const { data: admin, error } = await supabase
         .from("admin_users")
         .select("role")
-        .eq("id", adminUserId)
+        .eq("id", id)
         .single();
+      return !error && admin?.role === "Super Admin";
+    }
 
-      if (adminError || admin.role !== "Super Admin") {
+    // ── ACTION: GET ALL USERS (Super Admin Only) ──
+    if (action === "get-users") {
+      if (!(await verifySuperAdmin(adminUserId))) {
         return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 403, headers: corsHeaders });
       }
 
@@ -70,6 +74,113 @@ serve(async (req: Request) => {
 
       if (error) return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: corsHeaders });
       return new Response(JSON.stringify({ data }), { status: 200, headers: corsHeaders });
+    }
+
+    // ── ACTION: CREATE USER (Super Admin Only) ──
+    if (action === "create-user") {
+      if (!(await verifySuperAdmin(adminUserId))) {
+        return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 403, headers: corsHeaders });
+      }
+
+      if (!userData?.username || !userData?.password || !userData?.name) {
+        return new Response(JSON.stringify({ error: "Username, password, dan nama wajib diisi" }), { status: 400, headers: corsHeaders });
+      }
+
+      // Check for duplicate username
+      const { data: existing } = await supabase
+        .from("admin_users")
+        .select("id")
+        .eq("username", userData.username.trim().toLowerCase())
+        .maybeSingle();
+
+      if (existing) {
+        return new Response(JSON.stringify({ error: "Username sudah digunakan" }), { status: 409, headers: corsHeaders });
+      }
+
+      const hashedPwd = await hashPassword(userData.password);
+
+      const { data, error } = await supabase
+        .from("admin_users")
+        .insert([{
+          username: userData.username.trim().toLowerCase(),
+          password: hashedPwd,
+          name: userData.name.trim(),
+          role: userData.role || "Admin",
+          avatar: userData.avatar || "/femaleAvatar.svg",
+        }])
+        .select("id, username, name, role, avatar, created_at")
+        .single();
+
+      if (error) return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: corsHeaders });
+      return new Response(JSON.stringify({ success: true, data }), { status: 201, headers: corsHeaders });
+    }
+
+    // ── ACTION: UPDATE USER (Super Admin Only) ──
+    if (action === "update-user") {
+      if (!(await verifySuperAdmin(adminUserId))) {
+        return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 403, headers: corsHeaders });
+      }
+
+      if (!userId) {
+        return new Response(JSON.stringify({ error: "User ID wajib disertakan" }), { status: 400, headers: corsHeaders });
+      }
+
+      const payload: Record<string, string> = {};
+      if (userData?.username) payload.username = userData.username.trim().toLowerCase();
+      if (userData?.name) payload.name = userData.name.trim();
+      if (userData?.role) payload.role = userData.role;
+      if (userData?.avatar) payload.avatar = userData.avatar;
+
+      // If password is provided, hash it server-side
+      if (userData?.password) {
+        payload.password = await hashPassword(userData.password);
+      }
+
+      // Check for duplicate username (excluding current user)
+      if (payload.username) {
+        const { data: existing } = await supabase
+          .from("admin_users")
+          .select("id")
+          .eq("username", payload.username)
+          .neq("id", userId)
+          .maybeSingle();
+
+        if (existing) {
+          return new Response(JSON.stringify({ error: "Username sudah digunakan" }), { status: 409, headers: corsHeaders });
+        }
+      }
+
+      const { error } = await supabase
+        .from("admin_users")
+        .update(payload)
+        .eq("id", userId);
+
+      if (error) return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: corsHeaders });
+      return new Response(JSON.stringify({ success: true }), { status: 200, headers: corsHeaders });
+    }
+
+    // ── ACTION: DELETE USER (Super Admin Only) ──
+    if (action === "delete-user") {
+      if (!(await verifySuperAdmin(adminUserId))) {
+        return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 403, headers: corsHeaders });
+      }
+
+      if (!userId) {
+        return new Response(JSON.stringify({ error: "User ID wajib disertakan" }), { status: 400, headers: corsHeaders });
+      }
+
+      // Prevent self-deletion
+      if (userId === adminUserId) {
+        return new Response(JSON.stringify({ error: "Tidak bisa menghapus akun sendiri" }), { status: 400, headers: corsHeaders });
+      }
+
+      const { error } = await supabase
+        .from("admin_users")
+        .delete()
+        .eq("id", userId);
+
+      if (error) return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: corsHeaders });
+      return new Response(JSON.stringify({ success: true }), { status: 200, headers: corsHeaders });
     }
 
     // ── ACTION: CHANGE PASSWORD ──
@@ -97,13 +208,7 @@ serve(async (req: Request) => {
 
     // ── ACTION: RESET PASSWORD (Super Admin Only) ──
     if (action === "reset-password") {
-      const { data: admin, error: adminError } = await supabase
-        .from("admin_users")
-        .select("role")
-        .eq("id", adminUserId)
-        .single();
-
-      if (adminError || admin.role !== "Super Admin") {
+      if (!(await verifySuperAdmin(adminUserId))) {
         return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 403, headers: corsHeaders });
       }
 

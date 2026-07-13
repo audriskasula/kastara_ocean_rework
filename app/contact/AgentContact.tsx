@@ -59,4 +59,16 @@ const nomorTelp = [
     gender: "female",
     link: "https://api.whatsapp.com/send/?phone=62882003209563",
   },
+  {
+    nama: "Mr Aldo",
+    nomor: "085835942230",
+    gender: "male",
+    link: "https://api.whatsapp.com/send/?phone=6285835942230",
+  },
+  {
+    nama: "Mr Audris",
+    nomor: "081221470700",
+    gender: "male",
+    link: "https://api.whatsapp.com/send/?phone=6281221470700",
+  },
 ];

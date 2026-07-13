@@ -8,8 +8,6 @@ import Modal from "@/components/admin/Modal";
 import DeleteConfirmModal from "@/components/admin/DeleteConfirmModal";
 import FormField from "@/components/admin/FormField";
 import ImageUpload from "@/components/admin/ImageUpload";
-import { supabase } from "@/lib/supabase";
-import { hashPassword } from "@/lib/crypto";
 import { useRouter } from "next/navigation";
 
 export interface AdminUser {
@@ -128,40 +126,76 @@ export default function AdminUsersPage() {
     if (!validate()) return;
 
     setActionLoading(true);
-    const payload: Partial<AdminUser> & { password?: string } = {
-      username: form.username.trim().toLowerCase(),
-      name: form.name.trim(),
-      role: form.role,
-      avatar: form.avatar,
-    };
+    const fnUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/admin-management`;
 
-    if (form.password) {
-      payload.password = await hashPassword(form.password);
-    }
+    try {
+      if (editItem) {
+        // ── UPDATE USER via Edge Function ──
+        const userData: Record<string, string> = {
+          username: form.username.trim().toLowerCase(),
+          name: form.name.trim(),
+          role: form.role,
+          avatar: form.avatar,
+        };
+        if (form.password) {
+          userData.password = form.password; // Edge Function hashes server-side
+        }
 
-    if (editItem) {
-      const { error } = await supabase
-        .from("admin_users")
-        .update(payload)
-        .eq("id", editItem.id);
+        const response = await fetch(fnUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "apikey": process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "",
+          },
+          body: JSON.stringify({
+            action: "update-user",
+            userId: editItem.id,
+            adminUserId: user?.id,
+            userData,
+          }),
+        });
 
-      if (error) showToast("Gagal memperbarui pengguna", "error");
-      else {
-        showToast("Pengguna berhasil diperbarui");
-        fetchData();
-        setModalOpen(false);
+        if (!response.ok) {
+          const err = await response.json();
+          showToast(err.error || "Gagal memperbarui pengguna", "error");
+        } else {
+          showToast("Pengguna berhasil diperbarui");
+          fetchData();
+          setModalOpen(false);
+        }
+      } else {
+        // ── CREATE USER via Edge Function ──
+        const response = await fetch(fnUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "apikey": process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "",
+          },
+          body: JSON.stringify({
+            action: "create-user",
+            adminUserId: user?.id,
+            userData: {
+              username: form.username.trim().toLowerCase(),
+              password: form.password, // Edge Function hashes server-side
+              name: form.name.trim(),
+              role: form.role,
+              avatar: form.avatar,
+            },
+          }),
+        });
+
+        if (!response.ok) {
+          const err = await response.json();
+          showToast(err.error || "Gagal menambah pengguna", "error");
+        } else {
+          showToast("Pengguna baru berhasil ditambahkan");
+          fetchData();
+          setModalOpen(false);
+        }
       }
-    } else {
-      const { error } = await supabase
-        .from("admin_users")
-        .insert([payload]);
-
-      if (error) showToast("Gagal menambah pengguna", "error");
-      else {
-        showToast("Pengguna baru berhasil ditambahkan");
-        fetchData();
-        setModalOpen(false);
-      }
+    } catch (error) {
+      console.error("Save user error:", error);
+      showToast("Terjadi kesalahan koneksi ke server", "error");
     }
     setActionLoading(false);
   };
@@ -170,15 +204,31 @@ export default function AdminUsersPage() {
     if (!deleteModal) return;
 
     setActionLoading(true);
-    const { error } = await supabase
-      .from("admin_users")
-      .delete()
-      .eq("id", deleteModal.id);
+    try {
+      const fnUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/admin-management`;
+      const response = await fetch(fnUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "apikey": process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "",
+        },
+        body: JSON.stringify({
+          action: "delete-user",
+          userId: deleteModal.id,
+          adminUserId: user?.id,
+        }),
+      });
 
-    if (error) showToast("Gagal menghapus pengguna", "error");
-    else {
-      showToast("Pengguna berhasil dihapus permanen");
-      fetchData();
+      if (!response.ok) {
+        const err = await response.json();
+        showToast(err.error || "Gagal menghapus pengguna", "error");
+      } else {
+        showToast("Pengguna berhasil dihapus permanen");
+        fetchData();
+      }
+    } catch (error) {
+      console.error("Delete user error:", error);
+      showToast("Terjadi kesalahan koneksi ke server", "error");
     }
     setDeleteModal(null);
     setActionLoading(false);
