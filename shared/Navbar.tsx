@@ -17,6 +17,7 @@ export default function Navbar() {
   const navRef = useRef<HTMLDivElement | null>(null);
 
   const isLanding = pathname === "/landing";
+  const isPendaftaran = pathname?.startsWith("/pendaftaran");
 
   const navLink = [
     { href: "/", label: "Home" },
@@ -159,9 +160,11 @@ export default function Navbar() {
 
             {/* RIGHT DESKTOP */}
             <div className="hidden lg:flex items-center gap-3">
-              <Link href="/pendaftaran" className="bg-primary hover:bg-rose-700 text-white font-semibold px-6 py-2.5 rounded-full transition-all duration-300 shadow-md hover:shadow-lg text-sm">
-                Daftar Sekarang
-              </Link>
+              {!isPendaftaran && (
+                <Link href="/pendaftaran" className="bg-primary hover:bg-rose-700 text-white font-semibold px-6 py-2.5 rounded-full transition-all duration-300 shadow-md hover:shadow-lg text-sm">
+                  Daftar Sekarang
+                </Link>
+              )}
             </div>
 
             {/* MOBILE TOGGLE */}
@@ -177,13 +180,15 @@ export default function Navbar() {
       </div>
 
       {/* MOBILE FLOATING CTA */}
-      <div className="lg:hidden fixed bottom-6 left-0 right-0 z-50 px-5 pointer-events-none">
-        <div className="flex justify-center">
-          <Link href="/pendaftaran" className="bg-primary text-white font-bold w-full max-w-sm py-3.5 rounded-full shadow-[0_8px_30px_rgba(225,29,72,0.3)] text-center text-sm tracking-wide pointer-events-auto active:scale-95 transition-transform border border-white/20">
-            Daftar Sekarang
-          </Link>
+      {!isPendaftaran && (
+        <div className="lg:hidden fixed bottom-6 left-0 right-0 z-50 px-5 pointer-events-none">
+          <div className="flex justify-center">
+            <Link href="/pendaftaran" className="bg-primary text-white font-bold w-full max-w-sm py-3.5 rounded-full shadow-[0_8px_30px_rgba(225,29,72,0.3)] text-center text-sm tracking-wide pointer-events-auto active:scale-95 transition-transform border border-white/20">
+              Daftar Sekarang
+            </Link>
+          </div>
         </div>
-      </div>
+      )}
     </>
   );
 }
